@@ -110,6 +110,36 @@
       font-size: 0.95rem;
     }
 
+    .view-nav {
+      display: flex;
+      gap: 8px;
+      padding: 12px 14px 0;
+      flex-wrap: wrap;
+    }
+
+    .view-btn {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: #2d2851;
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .view-btn.active {
+      background: linear-gradient(130deg, #78f0de, #9be8ff);
+      box-shadow: inset 0 0 0 2px rgba(11, 159, 170, 0.25);
+    }
+
+    .app-view {
+      display: none;
+    }
+
+    .app-view.active-view {
+      display: block;
+    }
+
     .layout {
       display: grid;
       grid-template-columns: 320px 1fr 340px;
@@ -512,6 +542,80 @@
       border-radius: 16px;
       background: var(--panel-2);
       padding: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .victory-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 54px;
+      z-index: 4;
+    }
+
+    .victory-overlay.show {
+      display: flex;
+    }
+
+    .victory-banner {
+      background: linear-gradient(90deg, #f7b500, #ffd95d, #f7b500);
+      border: 1px solid rgba(92, 67, 0, 0.35);
+      color: #3f2e00;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      box-shadow: 0 10px 24px rgba(67, 44, 0, 0.26);
+      animation: victory-pop 360ms cubic-bezier(0.17, 0.84, 0.44, 1.1);
+    }
+
+    .victory-confetti {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+
+    .confetti-bit {
+      position: absolute;
+      top: -14px;
+      left: calc(var(--x, 50) * 1%);
+      width: 9px;
+      height: 14px;
+      border-radius: 2px;
+      background: var(--c, #f44336);
+      transform: rotate(var(--r, 0deg));
+      animation: confetti-fall var(--d, 1800ms) linear forwards;
+      opacity: 0.95;
+    }
+
+    @keyframes victory-pop {
+      0% {
+        transform: translateY(-14px) scale(0.9);
+        opacity: 0;
+      }
+      100% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+    }
+
+    @keyframes confetti-fall {
+      0% {
+        transform: translateY(-14px) rotate(var(--r, 0deg));
+        opacity: 0;
+      }
+      8% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(360px) rotate(calc(var(--r, 0deg) + 300deg));
+        opacity: 0;
+      }
     }
 
     .battle-arena {
@@ -582,6 +686,13 @@
       font-weight: 700;
     }
 
+    .party-count {
+      margin-top: 2px;
+      font-size: 0.8rem;
+      color: #68618a;
+      font-weight: 700;
+    }
+
     .battle-controls {
       margin-top: 10px;
       display: grid;
@@ -615,6 +726,44 @@
       color: #4f496f;
       font-size: 0.9rem;
       line-height: 1.2;
+      white-space: pre-line;
+    }
+
+    .battle-switch-wrap {
+      margin-top: 10px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+      padding: 8px;
+    }
+
+    .battle-switch-title {
+      font-size: 0.86rem;
+      font-weight: 700;
+      color: #504a71;
+      margin-bottom: 6px;
+    }
+
+    .battle-switch-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .battle-switch-btn {
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: #fff;
+      padding: 6px 8px;
+      text-align: left;
+      cursor: pointer;
+      font-weight: 700;
+      color: #2f2a55;
+    }
+
+    .battle-switch-btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
     }
 
     @media (max-width: 1130px) {
@@ -646,7 +795,8 @@
       }
 
       .battle-arena,
-      .battle-controls {
+      .battle-controls,
+      .battle-switch-list {
         grid-template-columns: 1fr;
       }
 
@@ -666,7 +816,13 @@
       <span class="badge">151 Pokemon | FRLG Learnset | Showdown style</span>
     </header>
 
-    <section class="layout">
+    <nav class="view-nav">
+      <button id="showBuilderViewBtn" class="view-btn active" type="button">Montar Time</button>
+      <button id="showBattleViewBtn" class="view-btn" type="button">Batalha</button>
+    </nav>
+
+    <section id="builderView" class="app-view active-view">
+      <section class="layout">
       <article class="panel">
         <h2>Kanto Dex</h2>
         <input id="searchInput" class="search" type="text" placeholder="Buscar Pokemon de Kanto..." />
@@ -715,40 +871,52 @@
           <strong>firered-leafgreen</strong> para cada Pokemon.
         </p>
       </article>
+      </section>
     </section>
 
-    <section class="battle-wrap">
-      <article class="battle-panel">
-        <h2>Batalha</h2>
-        <div class="toolbar">
-          <button id="startBattleBtn" class="btn primary" type="button">Iniciar batalha</button>
-        </div>
-
-        <div class="battle-arena">
-          <div class="battle-side">
-            <div class="battle-head">
-              <div id="battlePlayerName" class="battle-name">Seu Pokemon</div>
-              <div id="battlePlayerLevel" class="battle-level">Lv --</div>
-            </div>
-            <img id="battlePlayerSprite" class="battle-sprite" alt="Seu Pokemon" />
-            <div class="hp-track"><div id="battlePlayerHpFill" class="hp-fill"></div></div>
-            <div id="battlePlayerHpText" class="hp-text">HP: -- / --</div>
+    <section id="battleView" class="app-view">
+      <section class="battle-wrap">
+        <article class="battle-panel">
+          <h2>Batalha</h2>
+          <div class="toolbar">
+            <button id="startBattleBtn" class="btn primary" type="button">Iniciar batalha</button>
+          </div>
+          <div id="victoryOverlay" class="victory-overlay" aria-hidden="true">
+            <div class="victory-banner">Vitoria!</div>
+            <div id="victoryConfetti" class="victory-confetti"></div>
           </div>
 
-          <div class="battle-side">
-            <div class="battle-head">
-              <div id="battleEnemyName" class="battle-name">Rival</div>
-              <div id="battleEnemyLevel" class="battle-level">Lv --</div>
+          <div class="battle-arena">
+            <div class="battle-side">
+              <div class="battle-head">
+                <div id="battlePlayerName" class="battle-name">Seu Pokemon</div>
+                <div id="battlePlayerLevel" class="battle-level">Lv --</div>
+              </div>
+              <img id="battlePlayerSprite" class="battle-sprite" alt="Seu Pokemon" />
+              <div class="hp-track"><div id="battlePlayerHpFill" class="hp-fill"></div></div>
+              <div id="battlePlayerHpText" class="hp-text">HP: -- / --</div>
             </div>
-            <img id="battleEnemySprite" class="battle-sprite" alt="Pokemon inimigo" />
-            <div class="hp-track"><div id="battleEnemyHpFill" class="hp-fill"></div></div>
-            <div id="battleEnemyHpText" class="hp-text">HP: -- / --</div>
-          </div>
-        </div>
 
-        <div id="battleMoves" class="battle-controls"></div>
-        <div id="battleLog" class="battle-log">Monte seu time e clique em iniciar batalha.</div>
-      </article>
+            <div class="battle-side">
+              <div class="battle-head">
+                <div id="battleEnemyName" class="battle-name">Rival</div>
+                <div id="battleEnemyLevel" class="battle-level">Lv --</div>
+              </div>
+              <img id="battleEnemySprite" class="battle-sprite" alt="Pokemon inimigo" />
+              <div class="hp-track"><div id="battleEnemyHpFill" class="hp-fill"></div></div>
+              <div id="battleEnemyHpText" class="hp-text">HP: -- / --</div>
+              <div id="battleEnemyCount" class="party-count">Time rival: --/--</div>
+            </div>
+          </div>
+
+          <div id="battleMoves" class="battle-controls"></div>
+          <div class="battle-switch-wrap">
+            <div id="battleSwitchTitle" class="battle-switch-title">Troca opcional</div>
+            <div id="battleSwitches" class="battle-switch-list"></div>
+          </div>
+          <div id="battleLog" class="battle-log">Monte seu time e clique em iniciar batalha.</div>
+        </article>
+      </section>
     </section>
   </main>
 
@@ -819,6 +987,7 @@
       battle: {
         active: false,
         busy: false,
+        awaitingPlayerSwitch: false,
         playerParty: [],
         enemyParty: [],
         playerIndex: -1,
@@ -828,6 +997,10 @@
 
     const dexListEl = document.getElementById("dexList");
     const searchInputEl = document.getElementById("searchInput");
+    const builderViewEl = document.getElementById("builderView");
+    const battleViewEl = document.getElementById("battleView");
+    const showBuilderViewBtn = document.getElementById("showBuilderViewBtn");
+    const showBattleViewBtn = document.getElementById("showBattleViewBtn");
     const slotRowEl = document.getElementById("slotRow");
     const editorRootEl = document.getElementById("editorRoot");
     const teamListEl = document.getElementById("teamList");
@@ -852,8 +1025,13 @@
     const battleEnemySpriteEl = document.getElementById("battleEnemySprite");
     const battleEnemyHpFillEl = document.getElementById("battleEnemyHpFill");
     const battleEnemyHpTextEl = document.getElementById("battleEnemyHpText");
+    const battleEnemyCountEl = document.getElementById("battleEnemyCount");
     const battleMovesEl = document.getElementById("battleMoves");
+    const battleSwitchesEl = document.getElementById("battleSwitches");
+    const battleSwitchTitleEl = document.getElementById("battleSwitchTitle");
     const battleLogEl = document.getElementById("battleLog");
+    const victoryOverlayEl = document.getElementById("victoryOverlay");
+    const victoryConfettiEl = document.getElementById("victoryConfetti");
     const appModalEl = document.getElementById("appModal");
     const appModalMessageEl = document.getElementById("appModalMessage");
     const appModalOkEl = document.getElementById("appModalOk");
@@ -861,6 +1039,8 @@
     const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     const BATTLE_STEP_DELAY = 980;
     const BATTLE_SWITCH_DELAY = 820;
+    const CONFETTI_COLORS = ["#ff5a5f", "#ffd166", "#2dd78f", "#55b6ff", "#c77dff", "#ff8c42"];
+    let victoryFxTimer = null;
 
     function showAppMessage(message) {
       appModalMessageEl.textContent = message;
@@ -870,6 +1050,42 @@
 
     function hideAppMessage() {
       appModalEl.classList.remove("show");
+    }
+
+    function clearVictoryCelebration() {
+      if (victoryFxTimer) {
+        clearTimeout(victoryFxTimer);
+        victoryFxTimer = null;
+      }
+      victoryOverlayEl.classList.remove("show");
+      victoryConfettiEl.innerHTML = "";
+    }
+
+    function playVictoryCelebration() {
+      clearVictoryCelebration();
+      victoryOverlayEl.classList.add("show");
+
+      for (let i = 0; i < 34; i += 1) {
+        const bit = document.createElement("span");
+        bit.className = "confetti-bit";
+        bit.style.setProperty("--x", String(Math.floor(Math.random() * 100)));
+        bit.style.setProperty("--r", `${Math.floor(Math.random() * 120 - 60)}deg`);
+        bit.style.setProperty("--d", `${1200 + Math.floor(Math.random() * 1200)}ms`);
+        bit.style.setProperty("--c", CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)]);
+        victoryConfettiEl.appendChild(bit);
+      }
+
+      victoryFxTimer = setTimeout(() => {
+        clearVictoryCelebration();
+      }, 2600);
+    }
+
+    function switchView(targetView) {
+      const showBuilder = targetView === "builder";
+      builderViewEl.classList.toggle("active-view", showBuilder);
+      battleViewEl.classList.toggle("active-view", !showBuilder);
+      showBuilderViewBtn.classList.toggle("active", showBuilder);
+      showBattleViewBtn.classList.toggle("active", !showBuilder);
     }
 
     function toTitle(value) {
@@ -1253,12 +1469,14 @@
         battleEnemySpriteEl.removeAttribute("src");
         battleEnemyHpFillEl.style.width = "0%";
         battleEnemyHpTextEl.textContent = "HP: -- / --";
+        battleEnemyCountEl.textContent = enemyTotal > 0 ? `Time rival: ${enemyAlive}/${enemyTotal}` : "Time rival: --/--";
       } else {
         battleEnemyNameEl.textContent = enemy.name;
         battleEnemyLevelEl.textContent = `Lv ${enemy.level} | ${enemyAlive}/${enemyTotal}`;
         battleEnemySpriteEl.src = enemy.sprite;
         battleEnemyHpFillEl.style.width = `${Math.max(0, (enemy.hp / enemy.maxHp) * 100)}%`;
         battleEnemyHpTextEl.textContent = `HP: ${enemy.hp} / ${enemy.maxHp}`;
+        battleEnemyCountEl.textContent = `Time rival: ${enemyAlive}/${enemyTotal}`;
       }
     }
 
@@ -1286,8 +1504,12 @@
       battleMovesEl.innerHTML = "";
       const player = getActiveBattleUnit("player");
       const enemy = getActiveBattleUnit("enemy");
-      const { active, busy } = state.battle;
+      const { active, busy, awaitingPlayerSwitch } = state.battle;
       if (!active || !player) return;
+
+      if (awaitingPlayerSwitch || player.hp <= 0) {
+        return;
+      }
 
       player.moves.forEach((move, index) => {
         const btn = document.createElement("button");
@@ -1299,6 +1521,127 @@
         btn.addEventListener("click", () => runBattleTurn(index));
         battleMovesEl.appendChild(btn);
       });
+    }
+
+    function getPlayerSwitchOptions() {
+      const currentIndex = state.battle.playerIndex;
+      const options = [];
+      state.battle.playerParty.forEach((unit, index) => {
+        if (index === currentIndex) return;
+        if (unit.hp <= 0) return;
+        options.push({ index, unit });
+      });
+      return options;
+    }
+
+    function renderBattleSwitches() {
+      battleSwitchesEl.innerHTML = "";
+      const { active, busy, awaitingPlayerSwitch } = state.battle;
+
+      if (!active) {
+        battleSwitchTitleEl.textContent = "Troca opcional";
+        return;
+      }
+
+      const options = getPlayerSwitchOptions();
+      battleSwitchTitleEl.textContent = awaitingPlayerSwitch ? "Escolha quem entra (obrigatorio)" : "Troca opcional";
+
+      if (options.length === 0) {
+        battleSwitchesEl.innerHTML = '<button class="battle-switch-btn" type="button" disabled>Sem trocas disponiveis</button>';
+        return;
+      }
+
+      options.forEach((option) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "battle-switch-btn";
+        btn.disabled = busy;
+        btn.textContent = `${option.unit.name} (${option.unit.hp}/${option.unit.maxHp})`;
+        btn.addEventListener("click", () => {
+          handlePlayerSwitchChoice(option.index);
+        });
+        battleSwitchesEl.appendChild(btn);
+      });
+    }
+
+    function isBattleOver() {
+      return countAliveInParty(state.battle.playerParty) === 0 || countAliveInParty(state.battle.enemyParty) === 0;
+    }
+
+    function tryAutoSwitchEnemy() {
+      const enemy = getActiveBattleUnit("enemy");
+      if (!enemy || enemy.hp > 0) return null;
+      const next = findNextAliveIndex(state.battle.enemyParty, state.battle.enemyIndex + 1);
+      state.battle.enemyIndex = next;
+      if (next !== -1) {
+        return `Rival mandou ${state.battle.enemyParty[next].name}.`;
+      }
+      return null;
+    }
+
+    function requirePlayerSwitchIfNeeded() {
+      const player = getActiveBattleUnit("player");
+      if (!player || player.hp > 0) {
+        state.battle.awaitingPlayerSwitch = false;
+        return false;
+      }
+
+      const options = getPlayerSwitchOptions();
+      if (options.length === 0) {
+        return false;
+      }
+
+      state.battle.awaitingPlayerSwitch = true;
+      return true;
+    }
+
+    async function handlePlayerSwitchChoice(targetIndex) {
+      if (!state.battle.active || state.battle.busy) return;
+      const target = state.battle.playerParty[targetIndex];
+      if (!target || target.hp <= 0) return;
+
+      const forcedSwitch = state.battle.awaitingPlayerSwitch;
+      state.battle.busy = true;
+      const oldName = getActiveBattleUnit("player")?.name || "Pokemon";
+      state.battle.playerIndex = targetIndex;
+      state.battle.awaitingPlayerSwitch = false;
+      updateBattleHud();
+      renderBattleMoves();
+      renderBattleSwitches();
+      setBattleLog(`Voce trocou ${oldName} por ${target.name}.`);
+      await wait(BATTLE_SWITCH_DELAY);
+
+      if (!forcedSwitch) {
+        const enemy = getActiveBattleUnit("enemy");
+        const player = getActiveBattleUnit("player");
+        if (enemy && player) {
+          const enemyMove = chooseEnemyMove(enemy, player);
+          const enemyMsg = performAttack(enemy, player, enemyMove);
+          updateBattleHud();
+          appendBattleLog(enemyMsg);
+          await wait(BATTLE_STEP_DELAY);
+
+          if (player.hp <= 0) {
+            if (!requirePlayerSwitchIfNeeded()) {
+              finishBattle();
+              return;
+            }
+            state.battle.busy = false;
+            updateBattleHud();
+            renderBattleMoves();
+            renderBattleSwitches();
+            appendBattleLog("Seu Pokemon desmaiou. Escolha quem entra.");
+            return;
+          }
+        }
+      }
+
+      state.battle.busy = false;
+      renderBattleMoves();
+      renderBattleSwitches();
+      if (!isBattleOver()) {
+        appendBattleLog("Sua vez. Escolha um ataque ou troque novamente.");
+      }
     }
 
     async function buildEnemyMoves(mon) {
@@ -1408,6 +1751,7 @@
         return;
       }
 
+      clearVictoryCelebration();
       state.battle.busy = true;
       setBattleLog("Preparando batalha...");
       renderBattleMoves();
@@ -1430,20 +1774,24 @@
         state.battle.enemyParty = enemyParty;
         state.battle.playerIndex = findNextAliveIndex(playerParty, 0);
         state.battle.enemyIndex = findNextAliveIndex(enemyParty, 0);
+        state.battle.awaitingPlayerSwitch = false;
         state.battle.active = true;
         state.battle.busy = false;
         updateBattleHud();
         renderBattleMoves();
+        renderBattleSwitches();
         const firstPlayer = getActiveBattleUnit("player");
         const firstEnemy = getActiveBattleUnit("enemy");
         setBattleLog(`Batalha iniciada: ${firstPlayer?.name || "Seu Pokemon"} vs ${firstEnemy?.name || "Rival"}. Escolha um golpe.`);
       } catch (error) {
         state.battle.active = false;
         state.battle.busy = false;
+        state.battle.awaitingPlayerSwitch = false;
         state.battle.playerParty = [];
         state.battle.enemyParty = [];
         state.battle.playerIndex = -1;
         state.battle.enemyIndex = -1;
+        renderBattleSwitches();
         setBattleLog("Nao foi possivel iniciar a batalha agora.");
       }
     }
@@ -1508,42 +1856,16 @@
       return text;
     }
 
-    function processFaintAndSwitch() {
-      const notes = [];
-
-      const currentPlayer = getActiveBattleUnit("player");
-      if (currentPlayer && currentPlayer.hp <= 0) {
-        const next = findNextAliveIndex(state.battle.playerParty, state.battle.playerIndex + 1);
-        state.battle.playerIndex = next;
-        if (next !== -1) {
-          notes.push(`Seu ${state.battle.playerParty[next].name} entrou em campo.`);
-        }
-      }
-
-      const currentEnemy = getActiveBattleUnit("enemy");
-      if (currentEnemy && currentEnemy.hp <= 0) {
-        const next = findNextAliveIndex(state.battle.enemyParty, state.battle.enemyIndex + 1);
-        state.battle.enemyIndex = next;
-        if (next !== -1) {
-          notes.push(`Rival mandou ${state.battle.enemyParty[next].name}.`);
-        }
-      }
-
-      return notes;
-    }
-
-    function isBattleOver() {
-      return countAliveInParty(state.battle.playerParty) === 0 || countAliveInParty(state.battle.enemyParty) === 0;
-    }
-
     async function runBattleTurn(playerMoveIndex) {
       if (!state.battle.active || state.battle.busy) return;
+      if (state.battle.awaitingPlayerSwitch) return;
       const player = getActiveBattleUnit("player");
       const enemy = getActiveBattleUnit("enemy");
       if (!player || !enemy) return;
 
       state.battle.busy = true;
       renderBattleMoves();
+      renderBattleSwitches();
 
       const playerMove = player.moves[playerMoveIndex];
       const enemyMove = chooseEnemyMove(enemy, player);
@@ -1557,14 +1879,64 @@
       setBattleLog(firstMsg);
       await wait(BATTLE_STEP_DELAY);
 
-      if (player.hp <= 0 || enemy.hp <= 0) {
-        const switchNotes = processFaintAndSwitch();
-        updateBattleHud();
-        if (switchNotes.length > 0) {
-          appendBattleLog(switchNotes.join(" "));
+      const firstActionFaint = first.target.hp <= 0 || first.unit.hp <= 0;
+      if (firstActionFaint) {
+        if (isBattleOver()) {
+          finishBattle();
+          return;
+        }
+
+        const firstEnemySwitchNote = tryAutoSwitchEnemy();
+        if (firstEnemySwitchNote) {
+          updateBattleHud();
+          appendBattleLog(firstEnemySwitchNote);
           await wait(BATTLE_SWITCH_DELAY);
         }
+
+        if (isBattleOver()) {
+          finishBattle();
+          return;
+        }
+
+        if (requirePlayerSwitchIfNeeded()) {
+          state.battle.busy = false;
+          updateBattleHud();
+          renderBattleMoves();
+          renderBattleSwitches();
+          appendBattleLog("Seu Pokemon desmaiou. Escolha quem entra.");
+          return;
+        }
+
+        state.battle.busy = false;
+        renderBattleMoves();
+        renderBattleSwitches();
+        appendBattleLog("Sua vez. Escolha um ataque ou troque novamente.");
+        return;
+      }
+
+      if (isBattleOver()) {
         finishBattle();
+        return;
+      }
+
+      const firstEnemySwitchNote = tryAutoSwitchEnemy();
+      if (firstEnemySwitchNote) {
+        updateBattleHud();
+        appendBattleLog(firstEnemySwitchNote);
+        await wait(BATTLE_SWITCH_DELAY);
+      }
+
+      if (isBattleOver()) {
+        finishBattle();
+        return;
+      }
+
+      if (requirePlayerSwitchIfNeeded()) {
+        state.battle.busy = false;
+        updateBattleHud();
+        renderBattleMoves();
+        renderBattleSwitches();
+        appendBattleLog("Seu Pokemon desmaiou. Escolha quem entra.");
         return;
       }
 
@@ -1573,13 +1945,30 @@
       appendBattleLog(secondMsg);
       await wait(BATTLE_STEP_DELAY);
 
-      if (player.hp <= 0 || enemy.hp <= 0) {
-        const switchNotes = processFaintAndSwitch();
+      if (isBattleOver()) {
+        finishBattle();
+        return;
+      }
+
+      const secondEnemySwitchNote = tryAutoSwitchEnemy();
+      if (secondEnemySwitchNote) {
         updateBattleHud();
-        if (switchNotes.length > 0) {
-          appendBattleLog(switchNotes.join(" "));
-          await wait(BATTLE_SWITCH_DELAY);
-        }
+        appendBattleLog(secondEnemySwitchNote);
+        await wait(BATTLE_SWITCH_DELAY);
+      }
+
+      if (isBattleOver()) {
+        finishBattle();
+        return;
+      }
+
+      if (requirePlayerSwitchIfNeeded()) {
+        state.battle.busy = false;
+        updateBattleHud();
+        renderBattleMoves();
+        renderBattleSwitches();
+        appendBattleLog("Seu Pokemon desmaiou. Escolha quem entra.");
+        return;
       }
 
       finishBattle(false);
@@ -1596,6 +1985,7 @@
             setBattleLog("Empate! Os dois times foram derrotados.");
           } else if (enemyAlive === 0) {
             setBattleLog("Vitoria! Voce venceu a batalha em party.");
+            playVictoryCelebration();
           } else if (playerAlive === 0) {
             setBattleLog("Derrota... seu time inteiro caiu.");
           }
@@ -1603,6 +1993,7 @@
         }
         state.battle.busy = false;
         renderBattleMoves();
+        renderBattleSwitches();
         return;
       }
 
@@ -1613,6 +2004,7 @@
           setBattleLog("Empate! Os dois times foram derrotados.");
         } else if (enemyAlive === 0) {
           setBattleLog("Vitoria! Voce venceu a batalha em party.");
+          playVictoryCelebration();
         } else {
           setBattleLog("Derrota... seu time inteiro caiu.");
         }
@@ -1623,6 +2015,7 @@
 
       state.battle.busy = false;
       renderBattleMoves();
+      renderBattleSwitches();
     }
 
     function sanitizeSetMoves(entry) {
@@ -2543,6 +2936,9 @@
       renderDexList();
     });
 
+    showBuilderViewBtn.addEventListener("click", () => switchView("builder"));
+    showBattleViewBtn.addEventListener("click", () => switchView("battle"));
+
     teamNameInputEl.addEventListener("change", () => {
       if (!state.activeTeamId) return;
       saveTeamToStorage();
@@ -2566,6 +2962,7 @@
     });
 
     teamNameInputEl.value = defaultTeamName();
+    switchView("builder");
     renderAll();
     loadDex().then(() => loadTeamLibraryFromStorage(false));
     wait(0);
