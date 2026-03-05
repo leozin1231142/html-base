@@ -1,168 +1,2574 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aula de HTML para Iniciantes</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kanto Builder - FRLG</title>
   <style>
+    @import url("https://fonts.googleapis.com/css2?family=Bungee:wght@400&family=Rajdhani:wght@400;600;700&display=swap");
+
+    :root {
+      --bg-a: #ffe29c;
+      --bg-b: #ffc0a4;
+      --bg-c: #ffd8ec;
+      --ink: #1e1a33;
+      --muted: #5f5a78;
+      --line: rgba(30, 26, 51, 0.16);
+      --panel: rgba(255, 252, 244, 0.9);
+      --panel-2: rgba(255, 247, 233, 0.95);
+      --accent: #0b9faa;
+      --accent-2: #f2595f;
+      --glow: 0 12px 30px rgba(118, 63, 37, 0.22);
+    }
+
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
     body {
-      margin: 0;
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #eef7ff, #f7fdf1);
-      color: #1d2a35;
-      line-height: 1.6;
-    }
-
-    .container {
-      width: min(900px, 92%);
-      margin: 32px auto;
-      padding: 28px;
-      background: #ffffff;
-      border: 1px solid #dfe9f3;
-      border-radius: 14px;
-      box-shadow: 0 10px 30px rgba(16, 24, 40, 0.08);
-    }
-
-    h1 {
-      margin-top: 0;
-      margin-bottom: 6px;
-      color: #0b4f6c;
-    }
-
-    .subtitulo {
-      margin-top: 0;
-      margin-bottom: 24px;
-      color: #4b6475;
-    }
-
-    .bloco {
-      margin-bottom: 18px;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: "Rajdhani", sans-serif;
+      background:
+        radial-gradient(circle at 6% 12%, #fff2bc 0%, transparent 30%),
+        radial-gradient(circle at 94% 8%, #ffc5a3 0%, transparent 28%),
+        radial-gradient(circle at 18% 88%, #ffdaf0 0%, transparent 36%),
+        linear-gradient(135deg, var(--bg-a), var(--bg-b), var(--bg-c));
       padding: 16px;
+    }
+
+    .orb {
+      position: fixed;
+      border-radius: 999px;
+      filter: blur(45px);
+      opacity: 0.38;
+      pointer-events: none;
+      z-index: -1;
+      animation: drift 7s ease-in-out infinite alternate;
+    }
+
+    .orb.a {
+      width: 180px;
+      height: 180px;
+      background: #7de6de;
+      top: -40px;
+      right: 10%;
+    }
+
+    .orb.b {
+      width: 220px;
+      height: 220px;
+      background: #ff9d80;
+      bottom: -60px;
+      left: -40px;
+      animation-delay: 0.6s;
+    }
+
+    @keyframes drift {
+      from { transform: translateY(0) scale(1); }
+      to { transform: translateY(-12px) scale(1.08); }
+    }
+
+    .app {
+      width: min(1280px, 100%);
+      margin: 0 auto;
+      border: 2px solid var(--line);
+      border-radius: 24px;
+      background: var(--panel);
+      box-shadow: var(--glow);
+      overflow: hidden;
+    }
+
+    .topbar {
+      padding: 14px 18px;
+      border-bottom: 2px solid var(--line);
+      background: linear-gradient(120deg, #ffe8b5, #ffd7b7, #ffc3a7);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .title {
+      font-family: "Bungee", sans-serif;
+      letter-spacing: 1px;
+      font-size: clamp(1.2rem, 4.2vw, 2rem);
+      color: #262047;
+      line-height: 1;
+    }
+
+    .badge {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.65);
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-weight: 700;
+      color: #39325f;
+      font-size: 0.95rem;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 320px 1fr 340px;
+      gap: 14px;
+      padding: 14px;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--panel-2);
+      padding: 12px;
+      min-height: 200px;
+    }
+
+    .panel h2 {
+      font-size: 1.06rem;
+      margin-bottom: 8px;
+      letter-spacing: 0.4px;
+      color: #312b56;
+    }
+
+    .search {
+      width: 100%;
+      border: 1px solid var(--line);
       border-radius: 10px;
-      background: #f9fcff;
-      border-left: 5px solid #42a5f5;
+      padding: 9px 10px;
+      font: inherit;
+      font-size: 0.96rem;
+      background: #fff;
     }
 
-    .bloco h2 {
-      margin-top: 0;
-      color: #0d3b66;
+    .dex-list {
+      margin-top: 10px;
+      max-height: 640px;
+      overflow: auto;
+      display: grid;
+      gap: 8px;
+      padding-right: 2px;
     }
 
-    .bloco p {
-      margin-bottom: 0;
+    .dex-item {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: #fff;
+      cursor: pointer;
+      display: grid;
+      grid-template-columns: 40px 1fr;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 8px;
+      text-align: left;
+      transition: transform 120ms ease, box-shadow 120ms ease;
     }
 
-    .destaque {
-      background: #fff8e8;
-      border-left-color: #f4a261;
+    .dex-item:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 14px rgba(70, 47, 39, 0.12);
     }
 
-    code {
-      background: #eaf2ff;
-      color: #0d3b66;
-      padding: 2px 6px;
-      border-radius: 6px;
-      font-size: 0.95em;
+    .dex-num {
+      font-weight: 700;
+      color: #6c638b;
+      font-size: 0.88rem;
     }
 
-    @media (max-width: 600px) {
-      .container {
-        margin: 16px auto;
-        padding: 18px;
+    .dex-name {
+      font-weight: 700;
+      text-transform: capitalize;
+      line-height: 1;
+    }
+
+    .slot-row {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .slot-btn {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 10px;
+      padding: 8px;
+      min-height: 56px;
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #312d57;
+    }
+
+    .slot-btn.active {
+      border-color: var(--accent);
+      box-shadow: inset 0 0 0 2px rgba(11, 159, 170, 0.25);
+    }
+
+    .slot-btn.dragging {
+      opacity: 0.45;
+    }
+
+    .slot-btn.drag-over {
+      border-color: #ef7e65;
+      box-shadow: inset 0 0 0 2px rgba(239, 126, 101, 0.35);
+    }
+
+    .editor-empty {
+      border: 1px dashed rgba(49, 45, 87, 0.32);
+      border-radius: 12px;
+      padding: 14px;
+      color: #4f4a6e;
+      background: #fff;
+    }
+
+    .editor-grid {
+      display: grid;
+      grid-template-columns: 210px 1fr;
+      gap: 12px;
+    }
+
+    .mon-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      padding: 10px;
+    }
+
+    .mon-card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .mon-name {
+      font-weight: 700;
+      font-size: 1rem;
+      text-transform: capitalize;
+    }
+
+    .sprite {
+      width: 96px;
+      height: 96px;
+      display: block;
+      margin: 4px auto;
+      image-rendering: pixelated;
+      object-fit: contain;
+    }
+
+    .types {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    .type-tag {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      background: #fff9f1;
+    }
+
+    .stat-list {
+      margin-top: 8px;
+      display: grid;
+      gap: 4px;
+      font-size: 0.88rem;
+      color: #524d70;
+    }
+
+    .fields {
+      display: grid;
+      gap: 10px;
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    label {
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: #534f73;
+      display: grid;
+      gap: 4px;
+    }
+
+    input,
+    select,
+    textarea,
+    button {
+      font: inherit;
+    }
+
+    input,
+    select,
+    textarea {
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: #fff;
+      padding: 7px 8px;
+      color: var(--ink);
+    }
+
+    .move-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .ev-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #3f3a63;
+    }
+
+    .ev-total {
+      margin-top: 4px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: #5d577d;
+    }
+
+    .ev-total.warn {
+      color: #d3435d;
+    }
+
+    .team-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .team-item {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 10px;
+      padding: 8px;
+      min-height: 52px;
+      display: grid;
+      grid-template-columns: 48px 1fr;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .team-item img {
+      width: 46px;
+      height: 46px;
+      object-fit: contain;
+      image-rendering: pixelated;
+    }
+
+    .team-name {
+      font-weight: 700;
+      text-transform: capitalize;
+      line-height: 1;
+    }
+
+    .team-moves {
+      margin-top: 4px;
+      color: #5d5879;
+      font-size: 0.82rem;
+      line-height: 1.1;
+    }
+
+    .toolbar {
+      margin-top: 10px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: #2d2851;
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 120ms ease, box-shadow 120ms ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 7px 13px rgba(53, 35, 31, 0.14);
+    }
+
+    .btn.primary {
+      background: linear-gradient(130deg, #78f0de, #9be8ff);
+    }
+
+    .btn.danger {
+      background: linear-gradient(130deg, #ffd0cc, #ffc1be);
+    }
+
+    .export-box {
+      margin-top: 10px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 210px;
+      resize: vertical;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 0.83rem;
+      line-height: 1.2;
+    }
+
+    .hint {
+      margin-top: 8px;
+      font-size: 0.82rem;
+      color: #615b7f;
+    }
+
+    .team-manager {
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: #fff;
+      padding: 8px;
+      margin-bottom: 10px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .team-manager-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .mega-note {
+      margin-top: 8px;
+      border: 1px solid rgba(11, 159, 170, 0.35);
+      background: rgba(120, 240, 222, 0.2);
+      color: #214d53;
+      border-radius: 10px;
+      padding: 7px 9px;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(22, 18, 38, 0.45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      z-index: 20;
+    }
+
+    .modal-backdrop.show {
+      display: flex;
+    }
+
+    .modal-box {
+      width: min(420px, 100%);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fffdf8;
+      box-shadow: 0 18px 36px rgba(34, 26, 51, 0.28);
+      padding: 12px;
+    }
+
+    .modal-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #302a55;
+    }
+
+    .modal-message {
+      margin-top: 6px;
+      color: #4e486d;
+      font-size: 0.94rem;
+      line-height: 1.2;
+    }
+
+    .modal-actions {
+      margin-top: 10px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .battle-wrap {
+      padding: 0 14px 14px;
+    }
+
+    .battle-panel {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--panel-2);
+      padding: 12px;
+    }
+
+    .battle-arena {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: linear-gradient(150deg, #fff2da, #ffe5df, #ffeec9);
+      padding: 10px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .battle-side {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+      padding: 8px;
+    }
+
+    .battle-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .battle-name {
+      font-weight: 700;
+      text-transform: capitalize;
+      line-height: 1;
+    }
+
+    .battle-level {
+      font-size: 0.84rem;
+      color: #5d587a;
+      font-weight: 700;
+    }
+
+    .battle-sprite {
+      width: 84px;
+      height: 84px;
+      object-fit: contain;
+      image-rendering: pixelated;
+      display: block;
+      margin: 4px auto;
+    }
+
+    .hp-track {
+      margin-top: 2px;
+      height: 10px;
+      border: 1px solid rgba(30, 26, 51, 0.22);
+      border-radius: 999px;
+      background: #f4d7d2;
+      overflow: hidden;
+    }
+
+    .hp-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #2dd78f, #1cad69);
+      width: 100%;
+      transition: width 200ms ease;
+    }
+
+    .hp-text {
+      margin-top: 4px;
+      font-size: 0.83rem;
+      color: #544f72;
+      font-weight: 700;
+    }
+
+    .battle-controls {
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .battle-move {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+      padding: 8px;
+      cursor: pointer;
+      text-align: left;
+      font-weight: 700;
+      color: #2c2750;
+    }
+
+    .battle-move:disabled {
+      cursor: not-allowed;
+      opacity: 0.58;
+    }
+
+    .battle-log {
+      margin-top: 10px;
+      border: 1px dashed rgba(45, 39, 80, 0.3);
+      background: #fff;
+      border-radius: 10px;
+      padding: 9px;
+      min-height: 56px;
+      color: #4f496f;
+      font-size: 0.9rem;
+      line-height: 1.2;
+    }
+
+    @media (max-width: 1130px) {
+      .layout {
+        grid-template-columns: 280px 1fr;
       }
 
-      h1 {
-        font-size: 1.5rem;
+      .panel.preview {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (max-width: 790px) {
+      .layout {
+        grid-template-columns: 1fr;
       }
 
-      .bloco {
-        padding: 12px;
+      .editor-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .field-row,
+      .move-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .team-manager-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .battle-arena,
+      .battle-controls {
+        grid-template-columns: 1fr;
+      }
+
+      .slot-row {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
       }
     }
   </style>
 </head>
 <body>
-  <main class="container">
-    <h1>Aula Completa de HTML para Iniciantes</h1>
-    <p class="subtitulo">Do zero ate sua primeira pagina web</p>
+  <div class="orb a" aria-hidden="true"></div>
+  <div class="orb b" aria-hidden="true"></div>
 
-    <section class="bloco">
-      <h2>1. O que e HTML?</h2>
-      <p>
-        HTML significa HyperText Markup Language.<br>
-        Ele e a linguagem usada para estruturar paginas da internet.<br>
-        Pense no HTML como o esqueleto de um site: titulos, textos, imagens, links e formularios.<br>
-        Sem HTML, o navegador nao sabe como organizar o conteudo.
-      </p>
+  <main class="app">
+    <header class="topbar">
+      <h1 class="title">Kanto Team Builder</h1>
+      <span class="badge">151 Pokemon | FRLG Learnset | Showdown style</span>
+    </header>
+
+    <section class="layout">
+      <article class="panel">
+        <h2>Kanto Dex</h2>
+        <input id="searchInput" class="search" type="text" placeholder="Buscar Pokemon de Kanto..." />
+        <div id="dexList" class="dex-list"></div>
+      </article>
+
+      <article class="panel">
+        <h2>Builder</h2>
+        <div id="slotRow" class="slot-row"></div>
+        <div id="editorRoot"></div>
+      </article>
+
+      <article class="panel preview">
+        <h2>Seu Time</h2>
+        <div class="team-manager">
+          <div class="team-manager-grid">
+            <label>
+              Nome do time
+              <input id="teamNameInput" type="text" placeholder="Ex: Kanto Balance" />
+            </label>
+            <label>
+              Times salvos
+              <select id="savedTeamsSelect">
+                <option value="">-- nenhum --</option>
+              </select>
+            </label>
+          </div>
+          <div class="toolbar">
+            <button id="newTeamBtn" class="btn" type="button">Novo time</button>
+            <button id="deleteTeamBtn" class="btn danger" type="button">Apagar time</button>
+          </div>
+        </div>
+        <div id="teamList" class="team-list"></div>
+        <div class="toolbar">
+          <button id="exportBtn" class="btn primary" type="button">Exportar set</button>
+          <button id="importBtn" class="btn" type="button">Importar set</button>
+          <button id="saveBtn" class="btn" type="button">Salvar local</button>
+          <button id="loadBtn" class="btn" type="button">Carregar selecionado</button>
+          <button id="clearBtn" class="btn danger" type="button">Limpar time</button>
+        </div>
+        <div class="export-box">
+          <textarea id="exportArea" placeholder="Clique em Exportar set para gerar texto no formato Showdown..."></textarea>
+        </div>
+        <p class="hint">
+          Nota: este builder usa a PokeAPI, filtrando moves por version-group
+          <strong>firered-leafgreen</strong> para cada Pokemon.
+        </p>
+      </article>
     </section>
 
-    <section class="bloco">
-      <h2>2. Estrutura basica de um arquivo HTML</h2>
-      <p>
-        Todo arquivo HTML comeca com <code>&lt;!DOCTYPE html&gt;</code>, que informa ao navegador o tipo do documento.<br>
-        Depois temos a tag <code>&lt;html&gt;</code>, que envolve toda a pagina.<br>
-        Dentro dela, usamos <code>&lt;head&gt;</code> para configuracoes e <code>&lt;body&gt;</code> para o conteudo visivel.<br>
-        No <code>&lt;head&gt;</code>, voce define titulo da aba, codificacao e link para CSS.
-      </p>
-    </section>
+    <section class="battle-wrap">
+      <article class="battle-panel">
+        <h2>Batalha</h2>
+        <div class="toolbar">
+          <button id="startBattleBtn" class="btn primary" type="button">Iniciar batalha</button>
+        </div>
 
-    <section class="bloco">
-      <h2>3. Tags mais importantes</h2>
-      <p>
-        <code>&lt;h1&gt; ate &lt;h6&gt;</code>: titulos (do maior para o menor).<br>
-        <code>&lt;p&gt;</code>: paragrafo de texto.<br>
-        <code>&lt;br&gt;</code>: quebra de linha.<br>
-        <code>&lt;a&gt;</code>: cria links.<br>
-        <code>&lt;img&gt;</code>: adiciona imagens.<br>
-        <code>&lt;ul&gt;</code>, <code>&lt;ol&gt;</code> e <code>&lt;li&gt;</code>: listas.<br>
-        <code>&lt;div&gt;</code> e <code>&lt;span&gt;</code>: organizacao de blocos e textos.
-      </p>
-    </section>
+        <div class="battle-arena">
+          <div class="battle-side">
+            <div class="battle-head">
+              <div id="battlePlayerName" class="battle-name">Seu Pokemon</div>
+              <div id="battlePlayerLevel" class="battle-level">Lv --</div>
+            </div>
+            <img id="battlePlayerSprite" class="battle-sprite" alt="Seu Pokemon" />
+            <div class="hp-track"><div id="battlePlayerHpFill" class="hp-fill"></div></div>
+            <div id="battlePlayerHpText" class="hp-text">HP: -- / --</div>
+          </div>
 
-    <section class="bloco">
-      <h2>4. Exemplo pratico de link e imagem</h2>
-      <p>
-        Para criar um link, use <code>&lt;a href="URL"&gt;Texto&lt;/a&gt;</code>.<br>
-        Para imagem, use <code>&lt;img src="caminho" alt="descricao"&gt;</code>.<br>
-        O atributo <code>alt</code> e importante para acessibilidade e SEO.<br>
-        Exemplo: <code>&lt;img src="img/gato.jpg" alt="Foto de um gato"&gt;</code>.
-      </p>
-    </section>
+          <div class="battle-side">
+            <div class="battle-head">
+              <div id="battleEnemyName" class="battle-name">Rival</div>
+              <div id="battleEnemyLevel" class="battle-level">Lv --</div>
+            </div>
+            <img id="battleEnemySprite" class="battle-sprite" alt="Pokemon inimigo" />
+            <div class="hp-track"><div id="battleEnemyHpFill" class="hp-fill"></div></div>
+            <div id="battleEnemyHpText" class="hp-text">HP: -- / --</div>
+          </div>
+        </div>
 
-    <section class="bloco">
-      <h2>5. HTML + CSS + JavaScript</h2>
-      <p>
-        HTML: estrutura.<br>
-        CSS: visual e estilo (cores, tamanhos, espacamentos, layout).<br>
-        JavaScript: interatividade (cliques, animacoes, validacoes, logica).<br>
-        Juntos, eles formam a base do desenvolvimento web moderno.
-      </p>
-    </section>
-
-    <section class="bloco">
-      <h2>6. Boas praticas para iniciantes</h2>
-      <p>
-        Use nomes claros para classes e arquivos.<br>
-        Sempre feche as tags corretamente.<br>
-        Mantenha indentacao para facilitar leitura.<br>
-        Evite exagerar no <code>&lt;br&gt;</code>; prefira <code>&lt;p&gt;</code> para separar blocos de texto.<br>
-        Teste a pagina no navegador sempre que fizer alteracoes.
-      </p>
-    </section>
-
-    <section class="bloco destaque">
-      <h2>7. Resumo final</h2>
-      <p>
-        Se voce aprendeu o que e HTML, como funciona a estrutura basica e as principais tags,<br>
-        entao ja tem uma base forte para criar paginas simples.<br>
-        O proximo passo e praticar pequenos projetos e evoluir para CSS e JavaScript.<br>
-        Programacao web e pratica constante: quanto mais voce testa, mais rapido aprende.
-      </p>
+        <div id="battleMoves" class="battle-controls"></div>
+        <div id="battleLog" class="battle-log">Monte seu time e clique em iniciar batalha.</div>
+      </article>
     </section>
   </main>
+
+  <div id="appModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="appModalTitle">
+    <div class="modal-box">
+      <div id="appModalTitle" class="modal-title">Aviso</div>
+      <div id="appModalMessage" class="modal-message"></div>
+      <div class="modal-actions">
+        <button id="appModalOk" class="btn primary" type="button">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const FRLG_GROUP = "firered-leafgreen";
+    const FRLG_ALLOWED_METHODS = new Set(["level-up", "machine", "tutor", "egg"]);
+    const TEAM_LIBRARY_KEY = "kanto-builder-team-library-v2";
+    const STAT_ORDER = ["hp", "atk", "def", "spa", "spd", "spe"];
+    const STAT_LABEL = {
+      hp: "HP",
+      atk: "Atk",
+      def: "Def",
+      spa: "SpA",
+      spd: "SpD",
+      spe: "Spe",
+    };
+
+    const NATURES = [
+      "Hardy", "Lonely", "Brave", "Adamant", "Naughty",
+      "Bold", "Docile", "Relaxed", "Impish", "Lax",
+      "Timid", "Hasty", "Serious", "Jolly", "Naive",
+      "Modest", "Mild", "Quiet", "Bashful", "Rash",
+      "Calm", "Gentle", "Sassy", "Careful", "Quirky"
+    ];
+
+    const MEGA_FORMS_BY_BASE = {
+      3: [{ key: "mega", apiName: "venusaur-mega", stone: "venusaurite" }],
+      6: [
+        { key: "mega-x", apiName: "charizard-mega-x", stone: "charizardite x" },
+        { key: "mega-y", apiName: "charizard-mega-y", stone: "charizardite y" },
+      ],
+      9: [{ key: "mega", apiName: "blastoise-mega", stone: "blastoisinite" }],
+      15: [{ key: "mega", apiName: "beedrill-mega", stone: "beedrillite" }],
+      18: [{ key: "mega", apiName: "pidgeot-mega", stone: "pidgeotite" }],
+      65: [{ key: "mega", apiName: "alakazam-mega", stone: "alakazite" }],
+      80: [{ key: "mega", apiName: "slowbro-mega", stone: "slowbronite" }],
+      94: [{ key: "mega", apiName: "gengar-mega", stone: "gengarite" }],
+      115: [{ key: "mega", apiName: "kangaskhan-mega", stone: "kangaskhanite" }],
+      127: [{ key: "mega", apiName: "pinsir-mega", stone: "pinsirite" }],
+      130: [{ key: "mega", apiName: "gyarados-mega", stone: "gyaradosite" }],
+      142: [{ key: "mega", apiName: "aerodactyl-mega", stone: "aerodactylite" }],
+      150: [
+        { key: "mega-x", apiName: "mewtwo-mega-x", stone: "mewtwonite x" },
+        { key: "mega-y", apiName: "mewtwo-mega-y", stone: "mewtwonite y" },
+      ],
+    };
+
+    const state = {
+      dex: [],
+      search: "",
+      activeSlot: 0,
+      team: [null, null, null, null, null, null],
+      teamLibrary: [],
+      activeTeamId: null,
+      pokemonCache: new Map(),
+      megaCache: new Map(),
+      moveCache: new Map(),
+      battle: {
+        active: false,
+        busy: false,
+        playerParty: [],
+        enemyParty: [],
+        playerIndex: -1,
+        enemyIndex: -1,
+      },
+    };
+
+    const dexListEl = document.getElementById("dexList");
+    const searchInputEl = document.getElementById("searchInput");
+    const slotRowEl = document.getElementById("slotRow");
+    const editorRootEl = document.getElementById("editorRoot");
+    const teamListEl = document.getElementById("teamList");
+    const teamNameInputEl = document.getElementById("teamNameInput");
+    const savedTeamsSelectEl = document.getElementById("savedTeamsSelect");
+    const newTeamBtn = document.getElementById("newTeamBtn");
+    const deleteTeamBtn = document.getElementById("deleteTeamBtn");
+    const exportBtn = document.getElementById("exportBtn");
+    const importBtn = document.getElementById("importBtn");
+    const saveBtn = document.getElementById("saveBtn");
+    const loadBtn = document.getElementById("loadBtn");
+    const clearBtn = document.getElementById("clearBtn");
+    const exportAreaEl = document.getElementById("exportArea");
+    const startBattleBtn = document.getElementById("startBattleBtn");
+    const battlePlayerNameEl = document.getElementById("battlePlayerName");
+    const battlePlayerLevelEl = document.getElementById("battlePlayerLevel");
+    const battlePlayerSpriteEl = document.getElementById("battlePlayerSprite");
+    const battlePlayerHpFillEl = document.getElementById("battlePlayerHpFill");
+    const battlePlayerHpTextEl = document.getElementById("battlePlayerHpText");
+    const battleEnemyNameEl = document.getElementById("battleEnemyName");
+    const battleEnemyLevelEl = document.getElementById("battleEnemyLevel");
+    const battleEnemySpriteEl = document.getElementById("battleEnemySprite");
+    const battleEnemyHpFillEl = document.getElementById("battleEnemyHpFill");
+    const battleEnemyHpTextEl = document.getElementById("battleEnemyHpText");
+    const battleMovesEl = document.getElementById("battleMoves");
+    const battleLogEl = document.getElementById("battleLog");
+    const appModalEl = document.getElementById("appModal");
+    const appModalMessageEl = document.getElementById("appModalMessage");
+    const appModalOkEl = document.getElementById("appModalOk");
+
+    const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+    const BATTLE_STEP_DELAY = 980;
+    const BATTLE_SWITCH_DELAY = 820;
+
+    function showAppMessage(message) {
+      appModalMessageEl.textContent = message;
+      appModalEl.classList.add("show");
+      appModalOkEl.focus();
+    }
+
+    function hideAppMessage() {
+      appModalEl.classList.remove("show");
+    }
+
+    function toTitle(value) {
+      return value
+        .split("-")
+        .map((piece) => piece.charAt(0).toUpperCase() + piece.slice(1))
+        .join(" ");
+    }
+
+    function normalizeLookup(value) {
+      return (value || "")
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, "");
+    }
+
+    function canonicalMoveName(moveLine) {
+      return (moveLine || "")
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+    }
+
+    function calculateHp(base, iv, ev, level) {
+      return Math.floor(((2 * base + iv + Math.floor(ev / 4)) * level) / 100) + level + 10;
+    }
+
+    function calculateBattleStat(base, iv, ev, level) {
+      return Math.floor(((2 * base + iv + Math.floor(ev / 4)) * level) / 100) + 5;
+    }
+
+    const TYPE_EFFECT = {
+      normal: { rock: 0.5, ghost: 0 },
+      fire: { grass: 2, ice: 2, bug: 2, steel: 2, fire: 0.5, water: 0.5, rock: 0.5, dragon: 0.5 },
+      water: { fire: 2, ground: 2, rock: 2, water: 0.5, grass: 0.5, dragon: 0.5 },
+      electric: { water: 2, flying: 2, electric: 0.5, grass: 0.5, dragon: 0.5, ground: 0 },
+      grass: { water: 2, ground: 2, rock: 2, fire: 0.5, grass: 0.5, poison: 0.5, flying: 0.5, bug: 0.5, dragon: 0.5, steel: 0.5 },
+      ice: { grass: 2, ground: 2, flying: 2, dragon: 2, fire: 0.5, water: 0.5, ice: 0.5, steel: 0.5 },
+      fighting: { normal: 2, ice: 2, rock: 2, dark: 2, steel: 2, poison: 0.5, flying: 0.5, psychic: 0.5, bug: 0.5, fairy: 0.5, ghost: 0 },
+      poison: { grass: 2, fairy: 2, poison: 0.5, ground: 0.5, rock: 0.5, ghost: 0.5, steel: 0 },
+      ground: { fire: 2, electric: 2, poison: 2, rock: 2, steel: 2, grass: 0.5, bug: 0.5, flying: 0 },
+      flying: { grass: 2, fighting: 2, bug: 2, electric: 0.5, rock: 0.5, steel: 0.5 },
+      psychic: { fighting: 2, poison: 2, psychic: 0.5, steel: 0.5, dark: 0 },
+      bug: { grass: 2, psychic: 2, dark: 2, fire: 0.5, fighting: 0.5, poison: 0.5, flying: 0.5, ghost: 0.5, steel: 0.5, fairy: 0.5 },
+      rock: { fire: 2, ice: 2, flying: 2, bug: 2, fighting: 0.5, ground: 0.5, steel: 0.5 },
+      ghost: { psychic: 2, ghost: 2, dark: 0.5, normal: 0 },
+      dragon: { dragon: 2, steel: 0.5, fairy: 0 },
+      dark: { psychic: 2, ghost: 2, fighting: 0.5, dark: 0.5, fairy: 0.5 },
+      steel: { ice: 2, rock: 2, fairy: 2, fire: 0.5, water: 0.5, electric: 0.5, steel: 0.5 },
+      fairy: { fighting: 2, dragon: 2, dark: 2, fire: 0.5, poison: 0.5, steel: 0.5 },
+    };
+
+    function typeMultiplier(moveType, defenderTypes) {
+      let mult = 1;
+      defenderTypes.forEach((type) => {
+        mult *= TYPE_EFFECT[moveType]?.[type] ?? 1;
+      });
+      return mult;
+    }
+
+    function statKeyFromApi(name) {
+      if (name === "attack") return "atk";
+      if (name === "defense") return "def";
+      if (name === "special-attack") return "spa";
+      if (name === "special-defense") return "spd";
+      if (name === "speed") return "spe";
+      return "hp";
+    }
+
+    function getPokemonIdFromUrl(url) {
+      const parts = url.split("/").filter(Boolean);
+      return Number(parts[parts.length - 1]);
+    }
+
+    function setDexLoading(text) {
+      dexListEl.innerHTML = `<div class="editor-empty">${text}</div>`;
+    }
+
+    function renderDexList() {
+      const query = state.search.trim().toLowerCase();
+      const filtered = state.dex.filter((entry) => entry.name.includes(query));
+
+      if (filtered.length === 0) {
+        dexListEl.innerHTML = '<div class="editor-empty">Nenhum Pokemon encontrado.</div>';
+        return;
+      }
+
+      dexListEl.innerHTML = filtered
+        .map((entry) => {
+          const sprite = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${entry.id}.png`;
+          return `
+            <button class="dex-item" data-id="${entry.id}" type="button">
+              <img src="${sprite}" alt="${entry.name}" width="40" height="40" loading="lazy" style="image-rendering: pixelated;" />
+              <div>
+                <div class="dex-num">#${String(entry.id).padStart(3, "0")}</div>
+                <div class="dex-name">${entry.name}</div>
+              </div>
+            </button>
+          `;
+        })
+        .join("");
+
+      dexListEl.querySelectorAll(".dex-item").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          const id = Number(btn.dataset.id);
+          await addPokemonToActiveSlot(id);
+        });
+      });
+    }
+
+    function getEmptySet() {
+      return {
+        level: 50,
+        nature: "Hardy",
+        item: "",
+        ability: "",
+        formKey: "base",
+        moves: ["", "", "", ""],
+        ivs: { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 },
+        evs: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 },
+      };
+    }
+
+    function getMegaOptionsForPokemon(id) {
+      return MEGA_FORMS_BY_BASE[id] || [];
+    }
+
+    async function fetchMegaFormData(apiName) {
+      if (state.megaCache.has(apiName)) return state.megaCache.get(apiName);
+
+      const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${apiName}`);
+      if (!response.ok) {
+        throw new Error(`Falha ao carregar forma ${apiName}`);
+      }
+
+      const data = await response.json();
+      const stats = { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 };
+      data.stats.forEach((s) => {
+        stats[statKeyFromApi(s.stat.name)] = s.base_stat;
+      });
+
+      const prepared = {
+        keyName: apiName,
+        name: data.name,
+        sprite: data.sprites.front_default || "",
+        types: data.types.map((entry) => entry.type.name),
+        stats,
+        abilities: data.abilities.map((entry) => entry.ability.name).sort((a, b) => a.localeCompare(b)),
+      };
+
+      state.megaCache.set(apiName, prepared);
+      return prepared;
+    }
+
+    function getCurrentFormData(entry) {
+      const formKey = entry.set.formKey || "base";
+      if (formKey === "base") return null;
+      return entry.megaForms?.[formKey] || null;
+    }
+
+    function getDisplayData(entry) {
+      const formData = getCurrentFormData(entry);
+      if (formData) {
+        return {
+          name: formData.name,
+          sprite: formData.sprite || entry.sprite,
+          types: formData.types,
+          stats: formData.stats,
+          abilities: formData.abilities,
+        };
+      }
+
+      return {
+        name: entry.name,
+        sprite: entry.sprite,
+        types: entry.types,
+        stats: entry.stats,
+        abilities: entry.abilities,
+      };
+    }
+
+    function getActiveMegaMeta(entry) {
+      const selectedForm = entry.set.formKey || "base";
+      if (selectedForm === "base") return null;
+      return entry.megaOptions.find((form) => form.key === selectedForm) || null;
+    }
+
+    function enforceMegaStone(entry) {
+      const megaMeta = getActiveMegaMeta(entry);
+      if (!megaMeta) return;
+      entry.set.item = toTitle(megaMeta.stone);
+    }
+
+    function hasMegaOutsideSlot(slotIndex) {
+      return state.team.some((entry, index) => {
+        if (!entry || index === slotIndex) return false;
+        return (entry.set.formKey || "base") !== "base";
+      });
+    }
+
+    function enforceSingleMegaLimit(preferredSlot = null) {
+      const megaSlots = state.team
+        .map((entry, index) => ({ entry, index }))
+        .filter((record) => record.entry && (record.entry.set.formKey || "base") !== "base");
+
+      if (megaSlots.length <= 1) return;
+
+      let keeperIndex = megaSlots[0].index;
+      if (preferredSlot !== null && megaSlots.some((record) => record.index === preferredSlot)) {
+        keeperIndex = preferredSlot;
+      }
+
+      megaSlots.forEach((record) => {
+        if (record.index !== keeperIndex) {
+          record.entry.set.formKey = "base";
+        }
+      });
+    }
+
+    async function fetchPokemonData(id) {
+      if (state.pokemonCache.has(id)) return state.pokemonCache.get(id);
+
+      const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+      if (!response.ok) {
+        throw new Error(`Falha ao carregar Pokemon ${id}`);
+      }
+
+      const data = await response.json();
+
+      const stats = { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 };
+      data.stats.forEach((s) => {
+        stats[statKeyFromApi(s.stat.name)] = s.base_stat;
+      });
+
+      const moveSet = new Set();
+      data.moves.forEach((entry) => {
+        const validInFRLG = entry.version_group_details.some((detail) => {
+          return detail.version_group.name === FRLG_GROUP && FRLG_ALLOWED_METHODS.has(detail.move_learn_method.name);
+        });
+        if (validInFRLG) {
+          moveSet.add(entry.move.name);
+        }
+      });
+
+      const learnset = Array.from(moveSet).sort((a, b) => a.localeCompare(b));
+      const abilities = data.abilities.map((entry) => entry.ability.name).sort((a, b) => a.localeCompare(b));
+
+      const prepared = {
+        id: data.id,
+        name: data.name,
+        sprite: data.sprites.front_default || `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${data.id}.png`,
+        types: data.types.map((entry) => entry.type.name),
+        stats,
+        learnset,
+        abilities,
+      };
+
+      state.pokemonCache.set(id, prepared);
+      return prepared;
+    }
+
+    async function fetchMoveData(moveName) {
+      const key = canonicalMoveName(moveName);
+      if (!key) {
+        return { name: "tackle", displayName: "Tackle", power: 40, accuracy: 100, type: "normal", damageClass: "physical" };
+      }
+      if (state.moveCache.has(key)) return state.moveCache.get(key);
+
+      try {
+        const response = await fetch(`https://pokeapi.co/api/v2/move/${key}`);
+        if (!response.ok) throw new Error("move fetch failed");
+        const data = await response.json();
+        const prepared = {
+          name: key,
+          displayName: toTitle(key),
+          power: data.power || 0,
+          accuracy: data.accuracy || 100,
+          type: data.type?.name || "normal",
+          damageClass: data.damage_class?.name || "physical",
+        };
+        state.moveCache.set(key, prepared);
+        return prepared;
+      } catch (error) {
+        const fallback = { name: key, displayName: toTitle(key), power: 40, accuracy: 100, type: "normal", damageClass: "physical" };
+        state.moveCache.set(key, fallback);
+        return fallback;
+      }
+    }
+
+    async function prepareBattleUnitFromEntry(entry) {
+      const display = getDisplayData(entry);
+      const level = Math.max(1, Math.min(100, entry.set.level || 50));
+      const stats = {
+        hp: calculateHp(display.stats.hp, entry.set.ivs.hp, entry.set.evs.hp, level),
+        atk: calculateBattleStat(display.stats.atk, entry.set.ivs.atk, entry.set.evs.atk, level),
+        def: calculateBattleStat(display.stats.def, entry.set.ivs.def, entry.set.evs.def, level),
+        spa: calculateBattleStat(display.stats.spa, entry.set.ivs.spa, entry.set.evs.spa, level),
+        spd: calculateBattleStat(display.stats.spd, entry.set.ivs.spd, entry.set.evs.spd, level),
+        spe: calculateBattleStat(display.stats.spe, entry.set.ivs.spe, entry.set.evs.spe, level),
+      };
+
+      const chosenMoves = entry.set.moves.filter(Boolean).slice(0, 4);
+      const moveKeys = chosenMoves.length > 0 ? chosenMoves : ["tackle"];
+      const moveData = await Promise.all(moveKeys.map((move) => fetchMoveData(move)));
+
+      return {
+        id: entry.id,
+        name: toTitle(display.name),
+        sprite: display.sprite,
+        types: display.types,
+        level,
+        maxHp: stats.hp,
+        hp: stats.hp,
+        stats,
+        moves: moveData,
+      };
+    }
+
+    function pickRandomMoves(learnset, maxCount = 4) {
+      const pool = [...learnset];
+      const picked = [];
+      while (pool.length > 0 && picked.length < maxCount) {
+        const idx = Math.floor(Math.random() * pool.length);
+        picked.push(pool.splice(idx, 1)[0]);
+      }
+      return picked;
+    }
+
+    function sumBattleStats(stats) {
+      return stats.atk + stats.def + stats.spa + stats.spd + stats.spe;
+    }
+
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+    function getActiveBattleUnit(side) {
+      const party = side === "player" ? state.battle.playerParty : state.battle.enemyParty;
+      const index = side === "player" ? state.battle.playerIndex : state.battle.enemyIndex;
+      if (!Array.isArray(party) || index < 0 || index >= party.length) return null;
+      return party[index];
+    }
+
+    function countAliveInParty(party) {
+      return party.filter((unit) => unit.hp > 0).length;
+    }
+
+    function findNextAliveIndex(party, fromIndex = 0) {
+      for (let i = Math.max(0, fromIndex); i < party.length; i += 1) {
+        if (party[i].hp > 0) return i;
+      }
+      return -1;
+    }
+
+    function updateBattleHud() {
+      const player = getActiveBattleUnit("player");
+      const enemy = getActiveBattleUnit("enemy");
+
+      const playerAlive = countAliveInParty(state.battle.playerParty);
+      const enemyAlive = countAliveInParty(state.battle.enemyParty);
+      const playerTotal = state.battle.playerParty.length;
+      const enemyTotal = state.battle.enemyParty.length;
+
+      if (!player) {
+        battlePlayerNameEl.textContent = "Seu Pokemon";
+        battlePlayerLevelEl.textContent = playerTotal > 0 ? `0/${playerTotal}` : "Lv --";
+        battlePlayerSpriteEl.removeAttribute("src");
+        battlePlayerHpFillEl.style.width = "0%";
+        battlePlayerHpTextEl.textContent = "HP: -- / --";
+      } else {
+        battlePlayerNameEl.textContent = player.name;
+        battlePlayerLevelEl.textContent = `Lv ${player.level} | ${playerAlive}/${playerTotal}`;
+        battlePlayerSpriteEl.src = player.sprite;
+        battlePlayerHpFillEl.style.width = `${Math.max(0, (player.hp / player.maxHp) * 100)}%`;
+        battlePlayerHpTextEl.textContent = `HP: ${player.hp} / ${player.maxHp}`;
+      }
+
+      if (!enemy) {
+        battleEnemyNameEl.textContent = "Rival";
+        battleEnemyLevelEl.textContent = enemyTotal > 0 ? `0/${enemyTotal}` : "Lv --";
+        battleEnemySpriteEl.removeAttribute("src");
+        battleEnemyHpFillEl.style.width = "0%";
+        battleEnemyHpTextEl.textContent = "HP: -- / --";
+      } else {
+        battleEnemyNameEl.textContent = enemy.name;
+        battleEnemyLevelEl.textContent = `Lv ${enemy.level} | ${enemyAlive}/${enemyTotal}`;
+        battleEnemySpriteEl.src = enemy.sprite;
+        battleEnemyHpFillEl.style.width = `${Math.max(0, (enemy.hp / enemy.maxHp) * 100)}%`;
+        battleEnemyHpTextEl.textContent = `HP: ${enemy.hp} / ${enemy.maxHp}`;
+      }
+    }
+
+    function setBattleLog(message) {
+      battleLogEl.textContent = message;
+    }
+
+    function appendBattleLog(message) {
+      if (!battleLogEl.textContent) {
+        battleLogEl.textContent = message;
+        return;
+      }
+      battleLogEl.textContent = `${battleLogEl.textContent}\n${message}`;
+    }
+
+    function effectivenessText(mult) {
+      if (mult === 0) return "sem efeito";
+      if (mult >= 2) return "vantagem";
+      if (mult > 1) return "boa";
+      if (mult < 1) return "desvantagem";
+      return "neutro";
+    }
+
+    function renderBattleMoves() {
+      battleMovesEl.innerHTML = "";
+      const player = getActiveBattleUnit("player");
+      const enemy = getActiveBattleUnit("enemy");
+      const { active, busy } = state.battle;
+      if (!active || !player) return;
+
+      player.moves.forEach((move, index) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "battle-move";
+        btn.disabled = busy;
+        const mult = enemy ? typeMultiplier(move.type, enemy.types) : 1;
+        btn.textContent = `${index + 1}. ${move.displayName} (${toTitle(move.type)} | ${effectivenessText(mult)})`;
+        btn.addEventListener("click", () => runBattleTurn(index));
+        battleMovesEl.appendChild(btn);
+      });
+    }
+
+    async function buildEnemyMoves(mon) {
+      const sampled = pickRandomMoves(mon.learnset, 24);
+      const moveNames = sampled.length > 0 ? sampled : ["tackle"];
+      const moveData = await Promise.all(moveNames.map((move) => fetchMoveData(move)));
+
+      const damaging = moveData
+        .filter((move) => move.power > 0 && move.damageClass !== "status")
+        .sort((a, b) => {
+          const scoreA = a.power * (a.accuracy / 100) * (mon.types.includes(a.type) ? 1.2 : 1);
+          const scoreB = b.power * (b.accuracy / 100) * (mon.types.includes(b.type) ? 1.2 : 1);
+          return scoreB - scoreA;
+        });
+
+      const selected = [];
+
+      const bestStab = damaging.find((move) => mon.types.includes(move.type));
+      if (bestStab) selected.push(bestStab);
+
+      for (const move of damaging) {
+        if (selected.length >= 3) break;
+        if (!selected.some((picked) => picked.name === move.name)) {
+          selected.push(move);
+        }
+      }
+
+      const statusMoves = moveData.filter((move) => move.damageClass === "status");
+      if (statusMoves.length > 0 && Math.random() < 0.2 && selected.length < 4) {
+        selected.push(statusMoves[Math.floor(Math.random() * statusMoves.length)]);
+      }
+
+      while (selected.length < 4 && damaging.length > 0) {
+        const candidate = damaging[Math.floor(Math.random() * damaging.length)];
+        if (!selected.some((picked) => picked.name === candidate.name)) {
+          selected.push(candidate);
+        } else {
+          break;
+        }
+      }
+
+      if (selected.length === 0) {
+        selected.push(await fetchMoveData("tackle"));
+      }
+
+      return selected.slice(0, 4);
+    }
+
+    async function createRandomEnemy(playerId, playerUnit, usedEnemyIds = new Set()) {
+      if (!state.dex.length) {
+        throw new Error("Dex nao carregada");
+      }
+
+      let options = state.dex.filter((entry) => entry.id !== playerId && !usedEnemyIds.has(entry.id));
+      if (options.length === 0) {
+        options = state.dex.filter((entry) => entry.id !== playerId);
+      }
+      const playerScore = sumBattleStats(playerUnit.stats);
+      const sample = pickRandomMoves(options.map((entry) => entry.id), 18);
+      const sampledMons = await Promise.all(sample.map((id) => fetchPokemonData(id)));
+
+      let bestMon = sampledMons[0] || await fetchPokemonData(options[0].id);
+      let bestDiff = Number.POSITIVE_INFINITY;
+
+      sampledMons.forEach((mon) => {
+        const baseScore = mon.stats.atk + mon.stats.def + mon.stats.spa + mon.stats.spd + mon.stats.spe;
+        const diff = Math.abs(baseScore - playerScore / 2.8);
+        if (diff < bestDiff) {
+          bestDiff = diff;
+          bestMon = mon;
+        }
+      });
+
+      const mon = bestMon;
+
+      const enemyLevelNudge = Math.random() < 0.5 ? -1 : 1;
+      const level = clamp(playerUnit.level + enemyLevelNudge, 1, 100);
+      const moveData = await buildEnemyMoves(mon);
+
+      const defaultSet = getEmptySet();
+      const stats = {
+        hp: calculateHp(mon.stats.hp, defaultSet.ivs.hp, defaultSet.evs.hp, level),
+        atk: calculateBattleStat(mon.stats.atk, defaultSet.ivs.atk, defaultSet.evs.atk, level),
+        def: calculateBattleStat(mon.stats.def, defaultSet.ivs.def, defaultSet.evs.def, level),
+        spa: calculateBattleStat(mon.stats.spa, defaultSet.ivs.spa, defaultSet.evs.spa, level),
+        spd: calculateBattleStat(mon.stats.spd, defaultSet.ivs.spd, defaultSet.evs.spd, level),
+        spe: calculateBattleStat(mon.stats.spe, defaultSet.ivs.spe, defaultSet.evs.spe, level),
+      };
+
+      return {
+        id: mon.id,
+        name: toTitle(mon.name),
+        sprite: mon.sprite,
+        types: mon.types,
+        level,
+        maxHp: stats.hp,
+        hp: stats.hp,
+        stats,
+        moves: moveData,
+      };
+    }
+
+    async function startBattle() {
+      const playerEntries = state.team.filter(Boolean);
+      if (playerEntries.length === 0) {
+        showAppMessage("Adicione ao menos um Pokemon no time para batalhar.");
+        return;
+      }
+
+      state.battle.busy = true;
+      setBattleLog("Preparando batalha...");
+      renderBattleMoves();
+
+      try {
+        const playerParty = [];
+        for (const entry of playerEntries) {
+          playerParty.push(await prepareBattleUnitFromEntry(entry));
+        }
+
+        const usedEnemyIds = new Set();
+        const enemyParty = [];
+        for (const playerUnit of playerParty) {
+          const enemyUnit = await createRandomEnemy(playerUnit.id || -1, playerUnit, usedEnemyIds);
+          usedEnemyIds.add(enemyUnit.id);
+          enemyParty.push(enemyUnit);
+        }
+
+        state.battle.playerParty = playerParty;
+        state.battle.enemyParty = enemyParty;
+        state.battle.playerIndex = findNextAliveIndex(playerParty, 0);
+        state.battle.enemyIndex = findNextAliveIndex(enemyParty, 0);
+        state.battle.active = true;
+        state.battle.busy = false;
+        updateBattleHud();
+        renderBattleMoves();
+        const firstPlayer = getActiveBattleUnit("player");
+        const firstEnemy = getActiveBattleUnit("enemy");
+        setBattleLog(`Batalha iniciada: ${firstPlayer?.name || "Seu Pokemon"} vs ${firstEnemy?.name || "Rival"}. Escolha um golpe.`);
+      } catch (error) {
+        state.battle.active = false;
+        state.battle.busy = false;
+        state.battle.playerParty = [];
+        state.battle.enemyParty = [];
+        state.battle.playerIndex = -1;
+        state.battle.enemyIndex = -1;
+        setBattleLog("Nao foi possivel iniciar a batalha agora.");
+      }
+    }
+
+    function getAttackAndDefenseStats(attacker, defender, move) {
+      if (move.damageClass === "special") {
+        return { attack: attacker.stats.spa, defense: defender.stats.spd };
+      }
+      return { attack: attacker.stats.atk, defense: defender.stats.def };
+    }
+
+    function estimateDamage(attacker, defender, move) {
+      if (!move.power || move.power <= 0 || move.damageClass === "status") return 0;
+
+      const { attack, defense } = getAttackAndDefenseStats(attacker, defender, move);
+      const base = Math.floor(((((2 * attacker.level) / 5 + 2) * move.power * attack) / Math.max(1, defense)) / 50) + 2;
+      const stab = attacker.types.includes(move.type) ? 1.5 : 1;
+      const mult = typeMultiplier(move.type, defender.types);
+      const acc = (move.accuracy || 100) / 100;
+      return base * stab * mult * acc;
+    }
+
+    function chooseEnemyMove(enemy, player) {
+      const ranked = enemy.moves
+        .map((move) => ({ move, score: estimateDamage(enemy, player, move) }))
+        .sort((a, b) => b.score - a.score);
+
+      if (ranked.length === 0) {
+        return { displayName: "Tackle", type: "normal", power: 40, accuracy: 100, damageClass: "physical" };
+      }
+
+      if (Math.random() < 0.2 && ranked.length > 1) {
+        return ranked[1].move;
+      }
+
+      return ranked[0].move;
+    }
+
+    function performAttack(attacker, defender, move) {
+      if (Math.random() * 100 > move.accuracy) {
+        return `${attacker.name} usou ${move.displayName}, mas errou.`;
+      }
+
+      if (!move.power || move.power <= 0 || move.damageClass === "status") {
+        return `${attacker.name} usou ${move.displayName}. Nenhum dano direto.`;
+      }
+
+      const { attack, defense } = getAttackAndDefenseStats(attacker, defender, move);
+      const base = Math.floor(((((2 * attacker.level) / 5 + 2) * move.power * attack) / Math.max(1, defense)) / 50) + 2;
+      const stab = attacker.types.includes(move.type) ? 1.5 : 1;
+      const typeMult = typeMultiplier(move.type, defender.types);
+      const crit = Math.random() < 0.0625 ? 1.5 : 1;
+      const random = 0.85 + Math.random() * 0.15;
+      const damage = Math.max(1, Math.floor(base * stab * typeMult * crit * random));
+
+      defender.hp = Math.max(0, defender.hp - damage);
+      let text = `${attacker.name} usou ${move.displayName} e causou ${damage} de dano.`;
+      if (typeMult > 1.01) text += " Super efetivo.";
+      if (typeMult > 0 && typeMult < 0.99) text += " Pouco efetivo.";
+      if (typeMult === 0) text += " Nao teve efeito.";
+      if (crit > 1) text += " Critico!";
+      return text;
+    }
+
+    function processFaintAndSwitch() {
+      const notes = [];
+
+      const currentPlayer = getActiveBattleUnit("player");
+      if (currentPlayer && currentPlayer.hp <= 0) {
+        const next = findNextAliveIndex(state.battle.playerParty, state.battle.playerIndex + 1);
+        state.battle.playerIndex = next;
+        if (next !== -1) {
+          notes.push(`Seu ${state.battle.playerParty[next].name} entrou em campo.`);
+        }
+      }
+
+      const currentEnemy = getActiveBattleUnit("enemy");
+      if (currentEnemy && currentEnemy.hp <= 0) {
+        const next = findNextAliveIndex(state.battle.enemyParty, state.battle.enemyIndex + 1);
+        state.battle.enemyIndex = next;
+        if (next !== -1) {
+          notes.push(`Rival mandou ${state.battle.enemyParty[next].name}.`);
+        }
+      }
+
+      return notes;
+    }
+
+    function isBattleOver() {
+      return countAliveInParty(state.battle.playerParty) === 0 || countAliveInParty(state.battle.enemyParty) === 0;
+    }
+
+    async function runBattleTurn(playerMoveIndex) {
+      if (!state.battle.active || state.battle.busy) return;
+      const player = getActiveBattleUnit("player");
+      const enemy = getActiveBattleUnit("enemy");
+      if (!player || !enemy) return;
+
+      state.battle.busy = true;
+      renderBattleMoves();
+
+      const playerMove = player.moves[playerMoveIndex];
+      const enemyMove = chooseEnemyMove(enemy, player);
+
+      const playerFirst = player.stats.spe >= enemy.stats.spe;
+      const first = playerFirst ? { unit: player, target: enemy, move: playerMove } : { unit: enemy, target: player, move: enemyMove };
+      const second = playerFirst ? { unit: enemy, target: player, move: enemyMove } : { unit: player, target: enemy, move: playerMove };
+
+      const firstMsg = performAttack(first.unit, first.target, first.move);
+      updateBattleHud();
+      setBattleLog(firstMsg);
+      await wait(BATTLE_STEP_DELAY);
+
+      if (player.hp <= 0 || enemy.hp <= 0) {
+        const switchNotes = processFaintAndSwitch();
+        updateBattleHud();
+        if (switchNotes.length > 0) {
+          appendBattleLog(switchNotes.join(" "));
+          await wait(BATTLE_SWITCH_DELAY);
+        }
+        finishBattle();
+        return;
+      }
+
+      const secondMsg = performAttack(second.unit, second.target, second.move);
+      updateBattleHud();
+      appendBattleLog(secondMsg);
+      await wait(BATTLE_STEP_DELAY);
+
+      if (player.hp <= 0 || enemy.hp <= 0) {
+        const switchNotes = processFaintAndSwitch();
+        updateBattleHud();
+        if (switchNotes.length > 0) {
+          appendBattleLog(switchNotes.join(" "));
+          await wait(BATTLE_SWITCH_DELAY);
+        }
+      }
+
+      finishBattle(false);
+    }
+
+    function finishBattle(forceEnd = false) {
+      const player = getActiveBattleUnit("player");
+      const enemy = getActiveBattleUnit("enemy");
+      if (!player || !enemy) {
+        if (isBattleOver()) {
+          const playerAlive = countAliveInParty(state.battle.playerParty);
+          const enemyAlive = countAliveInParty(state.battle.enemyParty);
+          if (playerAlive === 0 && enemyAlive === 0) {
+            setBattleLog("Empate! Os dois times foram derrotados.");
+          } else if (enemyAlive === 0) {
+            setBattleLog("Vitoria! Voce venceu a batalha em party.");
+          } else if (playerAlive === 0) {
+            setBattleLog("Derrota... seu time inteiro caiu.");
+          }
+          state.battle.active = false;
+        }
+        state.battle.busy = false;
+        renderBattleMoves();
+        return;
+      }
+
+      if (isBattleOver()) {
+        const playerAlive = countAliveInParty(state.battle.playerParty);
+        const enemyAlive = countAliveInParty(state.battle.enemyParty);
+        if (playerAlive === 0 && enemyAlive === 0) {
+          setBattleLog("Empate! Os dois times foram derrotados.");
+        } else if (enemyAlive === 0) {
+          setBattleLog("Vitoria! Voce venceu a batalha em party.");
+        } else {
+          setBattleLog("Derrota... seu time inteiro caiu.");
+        }
+        state.battle.active = false;
+      } else if (!forceEnd) {
+        setBattleLog("Sua vez novamente. Escolha um golpe.");
+      }
+
+      state.battle.busy = false;
+      renderBattleMoves();
+    }
+
+    function sanitizeSetMoves(entry) {
+      const legalMoves = new Set(entry.learnset);
+      entry.set.moves = entry.set.moves.map((move) => (legalMoves.has(move) ? move : ""));
+    }
+
+    function defaultTeamName() {
+      return "Novo Time";
+    }
+
+    function makeTeamId() {
+      return `team-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    }
+
+    function serializeTeamForStorage() {
+      return state.team.map((entry) => {
+        if (!entry) return null;
+        return {
+          id: entry.id,
+          set: JSON.parse(JSON.stringify(entry.set)),
+        };
+      });
+    }
+
+    function renderSavedTeamsSelect() {
+      if (state.teamLibrary.length === 0) {
+        savedTeamsSelectEl.innerHTML = '<option value="">-- nenhum --</option>';
+        savedTeamsSelectEl.value = "";
+        return;
+      }
+
+      savedTeamsSelectEl.innerHTML = state.teamLibrary
+        .map((entry) => `<option value="${entry.id}">${entry.name}</option>`)
+        .join("");
+
+      savedTeamsSelectEl.value = state.activeTeamId || "";
+      if (!savedTeamsSelectEl.value) {
+        savedTeamsSelectEl.selectedIndex = 0;
+      }
+    }
+
+    function persistTeamLibrary() {
+      const payload = {
+        activeTeamId: state.activeTeamId,
+        teams: state.teamLibrary,
+      };
+      localStorage.setItem(TEAM_LIBRARY_KEY, JSON.stringify(payload));
+      renderSavedTeamsSelect();
+    }
+
+    function saveTeamToStorage(showAlert = false, forceCreate = false) {
+      if (!forceCreate && !state.activeTeamId) {
+        return;
+      }
+
+      try {
+        const nameInput = teamNameInputEl.value.trim();
+        const teamName = nameInput || defaultTeamName();
+        teamNameInputEl.value = teamName;
+
+        const snapshot = serializeTeamForStorage();
+        let existing = state.teamLibrary.find((entry) => entry.id === state.activeTeamId);
+
+        if (!existing) {
+          const newEntry = {
+            id: makeTeamId(),
+            name: teamName,
+            team: snapshot,
+            updatedAt: Date.now(),
+          };
+          state.teamLibrary.unshift(newEntry);
+          state.activeTeamId = newEntry.id;
+        } else {
+          existing.name = teamName;
+          existing.team = snapshot;
+          existing.updatedAt = Date.now();
+          state.teamLibrary = [existing, ...state.teamLibrary.filter((entry) => entry.id !== existing.id)];
+        }
+
+        persistTeamLibrary();
+        if (showAlert) {
+          showAppMessage("Time salvo localmente.");
+        }
+      } catch (error) {
+        if (showAlert) {
+          showAppMessage("Nao foi possivel salvar localmente.");
+        }
+      }
+    }
+
+    async function restoreSlotFromSaved(index, savedEntry) {
+      if (!savedEntry || !savedEntry.id || !savedEntry.set) {
+        state.team[index] = null;
+        return;
+      }
+
+      const mon = await fetchPokemonData(savedEntry.id);
+      const set = {
+        ...getEmptySet(),
+        ...savedEntry.set,
+        moves: Array.isArray(savedEntry.set.moves) ? savedEntry.set.moves.slice(0, 4) : ["", "", "", ""],
+        ivs: { ...getEmptySet().ivs, ...(savedEntry.set.ivs || {}) },
+        evs: { ...getEmptySet().evs, ...(savedEntry.set.evs || {}) },
+      };
+
+      while (set.moves.length < 4) set.moves.push("");
+
+      const restored = {
+        id: mon.id,
+        name: mon.name,
+        sprite: mon.sprite,
+        types: mon.types,
+        stats: mon.stats,
+        learnset: mon.learnset,
+        abilities: mon.abilities,
+        megaOptions: getMegaOptionsForPokemon(mon.id),
+        megaForms: {},
+        set,
+      };
+
+      if (set.formKey && set.formKey !== "base") {
+        const formMeta = restored.megaOptions.find((form) => form.key === set.formKey);
+        if (formMeta) {
+          try {
+            restored.megaForms[set.formKey] = await fetchMegaFormData(formMeta.apiName);
+          } catch (error) {
+            restored.set.formKey = "base";
+          }
+        } else {
+          restored.set.formKey = "base";
+        }
+      }
+
+      sanitizeSetMoves(restored);
+      state.team[index] = restored;
+    }
+
+    async function loadTeamRecord(record, showAlert = false) {
+      for (let i = 0; i < 6; i += 1) {
+        await restoreSlotFromSaved(i, record.team?.[i]);
+      }
+
+      state.activeTeamId = record.id;
+      teamNameInputEl.value = record.name || defaultTeamName();
+      enforceSingleMegaLimit();
+      renderAll();
+      persistTeamLibrary();
+      if (showAlert) showAppMessage("Time carregado.");
+    }
+
+    async function loadSelectedTeam(showAlert = false) {
+      const selectedId = savedTeamsSelectEl.value;
+      const record = state.teamLibrary.find((entry) => entry.id === selectedId);
+      if (!record) {
+        if (showAlert) showAppMessage("Selecione um time salvo valido.");
+        return;
+      }
+      await loadTeamRecord(record, showAlert);
+    }
+
+    function createNewTeam() {
+      state.team = [null, null, null, null, null, null];
+      state.activeSlot = 0;
+      state.activeTeamId = null;
+      exportAreaEl.value = "";
+      teamNameInputEl.value = defaultTeamName();
+      renderAll();
+      renderSavedTeamsSelect();
+    }
+
+    async function deleteSelectedTeam() {
+      const selectedId = savedTeamsSelectEl.value || state.activeTeamId;
+      if (!selectedId) {
+        showAppMessage("Selecione um time salvo para apagar.");
+        return;
+      }
+
+      const target = state.teamLibrary.find((entry) => entry.id === selectedId);
+      if (!target) {
+        showAppMessage("Time selecionado nao existe mais.");
+        return;
+      }
+
+      const removedActive = state.activeTeamId === selectedId;
+      state.teamLibrary = state.teamLibrary.filter((entry) => entry.id !== selectedId);
+
+      if (state.teamLibrary.length === 0) {
+        state.activeTeamId = null;
+        persistTeamLibrary();
+        createNewTeam();
+        showAppMessage("Time apagado. Nao restam times salvos.");
+        return;
+      }
+
+      if (removedActive) {
+        const nextRecord = state.teamLibrary[0];
+        await loadTeamRecord(nextRecord, false);
+      }
+
+      persistTeamLibrary();
+      showAppMessage(`Time \"${target.name}\" apagado.`);
+    }
+
+    async function loadTeamLibraryFromStorage(showAlert = false) {
+      const raw = localStorage.getItem(TEAM_LIBRARY_KEY);
+      if (!raw) {
+        const legacyRaw = localStorage.getItem("kanto-builder-team-v1");
+        if (legacyRaw) {
+          try {
+            const legacyParsed = JSON.parse(legacyRaw);
+            if (Array.isArray(legacyParsed)) {
+              const migrated = {
+                id: makeTeamId(),
+                name: "Time migrado",
+                team: legacyParsed,
+                updatedAt: Date.now(),
+              };
+              state.teamLibrary = [migrated];
+              state.activeTeamId = migrated.id;
+              persistTeamLibrary();
+              await loadTeamRecord(migrated, false);
+              if (showAlert) showAppMessage("Time antigo migrado para a nova biblioteca.");
+              return;
+            }
+          } catch (error) {
+          }
+        }
+
+        teamNameInputEl.value = defaultTeamName();
+        renderSavedTeamsSelect();
+        if (showAlert) showAppMessage("Nao existe time salvo ainda.");
+        return;
+      }
+
+      try {
+        const parsed = JSON.parse(raw);
+        if (!parsed || !Array.isArray(parsed.teams)) {
+          throw new Error("Formato invalido");
+        }
+
+        state.teamLibrary = parsed.teams;
+        state.activeTeamId = parsed.activeTeamId || null;
+        renderSavedTeamsSelect();
+
+        const activeRecord = state.teamLibrary.find((entry) => entry.id === state.activeTeamId);
+        if (activeRecord) {
+          await loadTeamRecord(activeRecord, false);
+        } else {
+          teamNameInputEl.value = defaultTeamName();
+        }
+
+        if (showAlert) showAppMessage("Biblioteca de times carregada.");
+      } catch (error) {
+        teamNameInputEl.value = defaultTeamName();
+        renderSavedTeamsSelect();
+        if (showAlert) showAppMessage("Falha ao carregar times salvos.");
+      }
+    }
+
+    function parseStatLine(line, target) {
+      const parts = line.split(":");
+      if (parts.length < 2) return;
+      const tokens = parts[1].split("/").map((item) => item.trim());
+      const statMap = {
+        hp: "hp",
+        atk: "atk",
+        def: "def",
+        spa: "spa",
+        spd: "spd",
+        spe: "spe",
+      };
+
+      tokens.forEach((token) => {
+        const match = token.match(/(\d+)\s*(HP|Atk|Def|SpA|SpD|Spe)/i);
+        if (!match) return;
+        const val = Number(match[1]);
+        const key = statMap[match[2].toLowerCase()];
+        if (key) target[key] = val;
+      });
+    }
+
+    function parseImportedSets(text) {
+      const blocks = text
+        .split(/\n\s*\n/)
+        .map((block) => block.trim())
+        .filter(Boolean);
+
+      return blocks.map((block) => {
+        const lines = block
+          .split("\n")
+          .map((line) => line.trim())
+          .filter((line) => line && !line.startsWith("#"));
+
+        const set = getEmptySet();
+        if (lines.length === 0) return null;
+
+        const header = lines[0];
+        const headerParts = header.split("@");
+        let namePart = headerParts[0].trim();
+        set.item = headerParts[1] ? headerParts[1].trim() : "";
+
+        const speciesMatch = namePart.match(/\(([^)]+)\)/);
+        if (speciesMatch) {
+          namePart = speciesMatch[1].trim();
+        }
+
+        const parsed = {
+          name: namePart,
+          set,
+        };
+
+        lines.slice(1).forEach((line) => {
+          if (line.startsWith("Ability:")) {
+            set.ability = canonicalMoveName(line.replace("Ability:", "").trim());
+            return;
+          }
+          if (line.startsWith("Level:")) {
+            set.level = clampInt(line.replace("Level:", "").trim(), 1, 100, 50);
+            return;
+          }
+          if (line.startsWith("EVs:")) {
+            parseStatLine(line, set.evs);
+            return;
+          }
+          if (line.startsWith("IVs:")) {
+            parseStatLine(line, set.ivs);
+            return;
+          }
+          if (line.endsWith(" Nature")) {
+            set.nature = line.replace(" Nature", "").trim() || "Hardy";
+            return;
+          }
+          if (line.startsWith("-")) {
+            const move = canonicalMoveName(line.slice(1).trim());
+            if (move) {
+              const slot = set.moves.findIndex((m) => !m);
+              if (slot !== -1) set.moves[slot] = move;
+            }
+          }
+        });
+
+        return parsed;
+      }).filter(Boolean);
+    }
+
+    function inferFormByItem(entry) {
+      const itemNorm = normalizeLookup(entry.set.item);
+      if (!itemNorm) {
+        entry.set.formKey = "base";
+        return;
+      }
+
+      const megaMatch = entry.megaOptions.find((form) => normalizeLookup(form.stone) === itemNorm);
+      entry.set.formKey = megaMatch ? megaMatch.key : "base";
+    }
+
+    async function importTeamFromTextarea() {
+      const text = exportAreaEl.value.trim();
+      if (!text) {
+        showAppMessage("Cole os sets no campo de texto para importar.");
+        return;
+      }
+
+      const parsedSets = parseImportedSets(text).slice(0, 6);
+      if (parsedSets.length === 0) {
+        showAppMessage("Nao foi possivel ler nenhum set valido.");
+        return;
+      }
+
+      const dexLookup = new Map(state.dex.map((entry) => [normalizeLookup(entry.name), entry.id]));
+      state.team = [null, null, null, null, null, null];
+
+      let importedCount = 0;
+      for (let i = 0; i < parsedSets.length; i += 1) {
+        const parsed = parsedSets[i];
+        const id = dexLookup.get(normalizeLookup(parsed.name));
+        if (!id) continue;
+
+        const mon = await fetchPokemonData(id);
+        const set = {
+          ...getEmptySet(),
+          ...parsed.set,
+          moves: parsed.set.moves.slice(0, 4),
+          ivs: { ...getEmptySet().ivs, ...parsed.set.ivs },
+          evs: { ...getEmptySet().evs, ...parsed.set.evs },
+        };
+        while (set.moves.length < 4) set.moves.push("");
+
+        const entry = {
+          id: mon.id,
+          name: mon.name,
+          sprite: mon.sprite,
+          types: mon.types,
+          stats: mon.stats,
+          learnset: mon.learnset,
+          abilities: mon.abilities,
+          megaOptions: getMegaOptionsForPokemon(mon.id),
+          megaForms: {},
+          set,
+        };
+
+        inferFormByItem(entry);
+        if (entry.set.formKey !== "base") {
+          const formMeta = entry.megaOptions.find((form) => form.key === entry.set.formKey);
+          if (formMeta) {
+            try {
+              entry.megaForms[entry.set.formKey] = await fetchMegaFormData(formMeta.apiName);
+            } catch (error) {
+              entry.set.formKey = "base";
+            }
+          }
+        }
+
+        sanitizeSetMoves(entry);
+        state.team[i] = entry;
+        importedCount += 1;
+      }
+
+      enforceSingleMegaLimit();
+      renderAll();
+      saveTeamToStorage(false, true);
+      showAppMessage(`Importacao concluida: ${importedCount} slot(s) carregados.`);
+    }
+
+    async function addPokemonToActiveSlot(id) {
+      const loadingText = `<div class="editor-empty">Carregando #${id}... espere um pouco.</div>`;
+      editorRootEl.innerHTML = loadingText;
+
+      try {
+        const mon = await fetchPokemonData(id);
+        const current = state.team[state.activeSlot];
+        const set = current && current.id === mon.id ? current.set : getEmptySet();
+
+        if (!set.ability && mon.abilities.length > 0) {
+          set.ability = mon.abilities[0];
+        }
+
+        set.moves = Array.isArray(set.moves) ? set.moves.slice(0, 4) : ["", "", "", ""];
+        while (set.moves.length < 4) {
+          set.moves.push("");
+        }
+
+        for (let i = 0; i < 4; i += 1) {
+          if (!set.moves[i] && mon.learnset[i]) {
+            set.moves[i] = mon.learnset[i];
+          }
+        }
+
+        state.team[state.activeSlot] = {
+          id: mon.id,
+          name: mon.name,
+          sprite: mon.sprite,
+          types: mon.types,
+          stats: mon.stats,
+          learnset: mon.learnset,
+          abilities: mon.abilities,
+          megaOptions: getMegaOptionsForPokemon(mon.id),
+          megaForms: {},
+          set,
+        };
+
+        sanitizeSetMoves(state.team[state.activeSlot]);
+
+        renderAll();
+        saveTeamToStorage();
+      } catch (error) {
+        editorRootEl.innerHTML = `<div class="editor-empty">Nao foi possivel carregar o Pokemon. Verifique sua internet e tente de novo.</div>`;
+      }
+    }
+
+    function clampInt(value, min, max, fallback) {
+      const parsed = Number.parseInt(value, 10);
+      if (Number.isNaN(parsed)) return fallback;
+      return Math.max(min, Math.min(max, parsed));
+    }
+
+    function updateSlotField(field, value) {
+      const slotMon = state.team[state.activeSlot];
+      if (!slotMon) return;
+      slotMon.set[field] = value;
+      renderTeamList();
+      saveTeamToStorage();
+    }
+
+    function updateSlotStatBucket(bucket, stat, value) {
+      const slotMon = state.team[state.activeSlot];
+      if (!slotMon) return;
+
+      if (bucket === "ivs") {
+        slotMon.set.ivs[stat] = clampInt(value, 0, 31, slotMon.set.ivs[stat]);
+      } else {
+        slotMon.set.evs[stat] = clampInt(value, 0, 252, slotMon.set.evs[stat]);
+      }
+
+      renderEditor();
+      renderTeamList();
+      saveTeamToStorage();
+    }
+
+    function totalEvs(evs) {
+      return STAT_ORDER.reduce((sum, key) => sum + evs[key], 0);
+    }
+
+    function moveTeamSlot(fromIndex, toIndex) {
+      if (fromIndex === toIndex) return;
+      if (fromIndex < 0 || fromIndex >= state.team.length) return;
+      if (toIndex < 0 || toIndex >= state.team.length) return;
+      if (!state.team[fromIndex]) return;
+
+      const reordered = [...state.team];
+      const [moved] = reordered.splice(fromIndex, 1);
+      reordered.splice(toIndex, 0, moved);
+
+      while (reordered.length < 6) reordered.push(null);
+      reordered.length = 6;
+
+      let nextActive = state.activeSlot;
+      if (state.activeSlot === fromIndex) {
+        nextActive = toIndex;
+      } else if (fromIndex < state.activeSlot && state.activeSlot <= toIndex) {
+        nextActive -= 1;
+      } else if (toIndex <= state.activeSlot && state.activeSlot < fromIndex) {
+        nextActive += 1;
+      }
+
+      state.team = reordered;
+      state.activeSlot = Math.max(0, Math.min(5, nextActive));
+      renderAll();
+      saveTeamToStorage();
+    }
+
+    function renderSlotButtons() {
+      slotRowEl.innerHTML = state.team
+        .map((entry, index) => {
+          const label = entry ? toTitle(entry.name) : `Slot ${index + 1}`;
+          return `<button class="slot-btn ${state.activeSlot === index ? "active" : ""}" data-slot="${index}" draggable="${entry ? "true" : "false"}" type="button">${label}</button>`;
+        })
+        .join("");
+
+      slotRowEl.querySelectorAll(".slot-btn").forEach((btn) => {
+        const slotIndex = Number(btn.dataset.slot);
+
+        btn.addEventListener("click", () => {
+          state.activeSlot = slotIndex;
+          renderEditor();
+          renderSlotButtons();
+        });
+
+        btn.addEventListener("dragstart", (event) => {
+          if (!state.team[slotIndex]) {
+            event.preventDefault();
+            return;
+          }
+          event.dataTransfer.effectAllowed = "move";
+          event.dataTransfer.setData("text/plain", String(slotIndex));
+          btn.classList.add("dragging");
+        });
+
+        btn.addEventListener("dragend", () => {
+          slotRowEl.querySelectorAll(".slot-btn").forEach((item) => {
+            item.classList.remove("dragging", "drag-over");
+          });
+        });
+
+        btn.addEventListener("dragover", (event) => {
+          event.preventDefault();
+          btn.classList.add("drag-over");
+        });
+
+        btn.addEventListener("dragleave", () => {
+          btn.classList.remove("drag-over");
+        });
+
+        btn.addEventListener("drop", (event) => {
+          event.preventDefault();
+          btn.classList.remove("drag-over");
+          const fromRaw = event.dataTransfer.getData("text/plain");
+          const fromIndex = Number(fromRaw);
+          if (Number.isNaN(fromIndex)) return;
+          moveTeamSlot(fromIndex, slotIndex);
+        });
+      });
+    }
+
+    function createStatInputRow(bucket, values) {
+      return STAT_ORDER
+        .map((stat) => {
+          return `
+            <label>
+              ${STAT_LABEL[stat]}
+              <input data-bucket="${bucket}" data-stat="${stat}" type="number" value="${values[stat]}" min="0" max="${bucket === "ivs" ? 31 : 252}" />
+            </label>
+          `;
+        })
+        .join("");
+    }
+
+    function renderEditor() {
+      const entry = state.team[state.activeSlot];
+
+      if (!entry) {
+        editorRootEl.innerHTML = `
+          <div class="editor-empty">
+            Escolha um Pokemon na Dex para preencher o slot ${state.activeSlot + 1}.<br />
+            Esse builder usa os 151 de Kanto e aprende os moves via dados FRLG.
+          </div>
+        `;
+        return;
+      }
+
+      const display = getDisplayData(entry);
+      enforceMegaStone(entry);
+      sanitizeSetMoves(entry);
+      const evTotal = totalEvs(entry.set.evs);
+      const evWarnClass = evTotal > 510 ? "warn" : "";
+      const moveOptions = entry.learnset
+        .map((move) => `<option value="${move}">${toTitle(move)}</option>`)
+        .join("");
+
+      const natureOptions = NATURES
+        .map((nature) => `<option value="${nature}">${nature}</option>`)
+        .join("");
+
+      const abilityPool = display.abilities;
+      if (!abilityPool.includes(entry.set.ability)) {
+        entry.set.ability = abilityPool[0] || "";
+      }
+
+      const abilityOptions = abilityPool
+        .map((ability) => `<option value="${ability}">${toTitle(ability)}</option>`)
+        .join("");
+
+      const hasMega = entry.megaOptions.length > 0;
+      const megaOptionsMarkup = hasMega
+        ? `
+          <label>
+            Forma
+            <select id="formSelect">
+              <option value="base">Base</option>
+              ${entry.megaOptions.map((form) => `<option value="${form.key}">${toTitle(form.apiName)}</option>`).join("")}
+            </select>
+          </label>
+        `
+        : "";
+
+      const activeMegaMeta = getActiveMegaMeta(entry);
+      const megaNoteMarkup = activeMegaMeta
+        ? `<div class="mega-note">Mega ativa: item travado em ${toTitle(activeMegaMeta.stone)}.</div>`
+        : "";
+
+      editorRootEl.innerHTML = `
+        <div class="editor-grid">
+          <section class="mon-card">
+            <div class="mon-card-head">
+              <div class="mon-name">${toTitle(display.name)} #${String(entry.id).padStart(3, "0")}</div>
+            </div>
+            <img class="sprite" src="${display.sprite}" alt="${display.name}" />
+            <div class="types">
+              ${display.types.map((type) => `<span class="type-tag">${type}</span>`).join("")}
+            </div>
+            <div class="stat-list">
+              ${STAT_ORDER.map((stat) => `<div>${STAT_LABEL[stat]}: ${display.stats[stat]}</div>`).join("")}
+            </div>
+          </section>
+
+          <section class="fields">
+            <div class="field-row">
+              <label>
+                Level
+                <input id="levelInput" type="number" min="1" max="100" value="${entry.set.level}" />
+              </label>
+
+              <label>
+                Nature
+                <select id="natureSelect">${natureOptions}</select>
+              </label>
+
+              <label>
+                Item
+                <input id="itemInput" type="text" placeholder="Leftovers" value="${entry.set.item}" />
+              </label>
+            </div>
+
+            <div class="field-row">
+              <label>
+                Ability
+                <select id="abilitySelect">${abilityOptions}</select>
+              </label>
+              ${megaOptionsMarkup}
+            </div>
+            ${megaNoteMarkup}
+
+            <div>
+              <div class="ev-title">Moves (FRLG learnset)</div>
+              <div class="move-grid">
+                ${[0, 1, 2, 3].map((index) => {
+                  return `
+                    <label>
+                      Move ${index + 1}
+                      <select class="move-select" data-index="${index}">
+                        <option value="">-- sem move --</option>
+                        ${moveOptions}
+                      </select>
+                    </label>
+                  `;
+                }).join("")}
+              </div>
+            </div>
+
+            <div>
+              <div class="ev-title">EVs</div>
+              <div class="field-row">${createStatInputRow("evs", entry.set.evs)}</div>
+              <div class="ev-total ${evWarnClass}">Total EVs: ${evTotal} / 510</div>
+            </div>
+
+            <div>
+              <div class="ev-title">IVs</div>
+              <div class="field-row">${createStatInputRow("ivs", entry.set.ivs)}</div>
+            </div>
+          </section>
+        </div>
+      `;
+
+      const levelInput = document.getElementById("levelInput");
+      const natureSelect = document.getElementById("natureSelect");
+      const itemInput = document.getElementById("itemInput");
+      const abilitySelect = document.getElementById("abilitySelect");
+      const formSelect = document.getElementById("formSelect");
+
+      natureSelect.value = entry.set.nature;
+      abilitySelect.value = entry.set.ability;
+
+      document.querySelectorAll(".move-select").forEach((select, i) => {
+        select.value = entry.set.moves[i] || "";
+      });
+
+      levelInput.addEventListener("change", () => {
+        const level = clampInt(levelInput.value, 1, 100, entry.set.level);
+        updateSlotField("level", level);
+        renderEditor();
+      });
+
+      natureSelect.addEventListener("change", () => {
+        updateSlotField("nature", natureSelect.value);
+      });
+
+      itemInput.addEventListener("change", () => {
+        updateSlotField("item", itemInput.value.trim());
+        enforceMegaStone(entry);
+        renderEditor();
+      });
+
+      abilitySelect.addEventListener("change", () => {
+        updateSlotField("ability", abilitySelect.value);
+      });
+
+      if (formSelect) {
+        formSelect.value = entry.set.formKey || "base";
+        formSelect.addEventListener("change", async () => {
+          const selected = formSelect.value;
+
+          if (selected !== "base" && hasMegaOutsideSlot(state.activeSlot)) {
+            showAppMessage("Limite de 1 Mega por time. Remova a Mega atual antes de ativar outra.");
+            entry.set.formKey = "base";
+            renderEditor();
+            renderTeamList();
+            saveTeamToStorage();
+            return;
+          }
+
+          entry.set.formKey = selected;
+
+          if (selected !== "base") {
+            const formMeta = entry.megaOptions.find((form) => form.key === selected);
+            if (formMeta && !entry.megaForms[selected]) {
+              editorRootEl.innerHTML = '<div class="editor-empty">Carregando forma Mega...</div>';
+              try {
+                entry.megaForms[selected] = await fetchMegaFormData(formMeta.apiName);
+              } catch (error) {
+                entry.set.formKey = "base";
+              }
+            }
+
+            const activeFormMeta = entry.megaOptions.find((form) => form.key === entry.set.formKey);
+            if (activeFormMeta) {
+              entry.set.item = toTitle(activeFormMeta.stone);
+            }
+          } else {
+            entry.set.formKey = "base";
+          }
+
+          enforceSingleMegaLimit(state.activeSlot);
+
+          renderEditor();
+          renderTeamList();
+          saveTeamToStorage();
+        });
+      }
+
+      document.querySelectorAll(".move-select").forEach((select) => {
+        select.addEventListener("change", () => {
+          const idx = Number(select.dataset.index);
+          entry.set.moves[idx] = select.value;
+          renderTeamList();
+          saveTeamToStorage();
+        });
+      });
+
+      document.querySelectorAll("input[data-bucket]").forEach((input) => {
+        input.addEventListener("change", () => {
+          updateSlotStatBucket(input.dataset.bucket, input.dataset.stat, input.value);
+        });
+      });
+    }
+
+    function renderTeamList() {
+      teamListEl.innerHTML = state.team
+        .map((entry, index) => {
+          if (!entry) {
+            return `<div class="team-item"><div></div><div><div class="team-name">Slot ${index + 1} vazio</div></div></div>`;
+          }
+
+          const display = getDisplayData(entry);
+
+          const moveLine = entry.set.moves.filter(Boolean).map((move) => toTitle(move)).join(" / ") || "Sem moves";
+          return `
+            <div class="team-item">
+              <img src="${display.sprite}" alt="${display.name}" loading="lazy" />
+              <div>
+                <div class="team-name">${toTitle(display.name)}</div>
+                <div class="team-moves">${moveLine}</div>
+              </div>
+            </div>
+          `;
+        })
+        .join("");
+    }
+
+    function formatEvLine(evs) {
+      const tokens = STAT_ORDER
+        .filter((stat) => evs[stat] > 0)
+        .map((stat) => `${evs[stat]} ${STAT_LABEL[stat]}`);
+      return tokens.length > 0 ? `EVs: ${tokens.join(" / ")}` : "";
+    }
+
+    function formatIvLine(ivs) {
+      const tokens = STAT_ORDER
+        .filter((stat) => ivs[stat] !== 31)
+        .map((stat) => `${ivs[stat]} ${STAT_LABEL[stat]}`);
+      return tokens.length > 0 ? `IVs: ${tokens.join(" / ")}` : "";
+    }
+
+    function exportTeam() {
+      const blocks = state.team
+        .filter(Boolean)
+        .map((entry) => {
+          enforceMegaStone(entry);
+          const lines = [];
+          const itemSuffix = entry.set.item ? ` @ ${entry.set.item}` : "";
+          lines.push(`${toTitle(entry.name)}${itemSuffix}`);
+          if (entry.set.ability) lines.push(`Ability: ${toTitle(entry.set.ability)}`);
+          lines.push(`Level: ${entry.set.level}`);
+          const evLine = formatEvLine(entry.set.evs);
+          if (evLine) lines.push(evLine);
+          const ivLine = formatIvLine(entry.set.ivs);
+          if (ivLine) lines.push(ivLine);
+          lines.push(`${entry.set.nature} Nature`);
+          entry.set.moves.filter(Boolean).forEach((move) => lines.push(`- ${toTitle(move)}`));
+          return lines.join("\n");
+        });
+
+      exportAreaEl.value = blocks.join("\n\n");
+    }
+
+    function clearTeam() {
+      state.team = [null, null, null, null, null, null];
+      state.activeSlot = 0;
+      exportAreaEl.value = "";
+      renderAll();
+      saveTeamToStorage();
+    }
+
+    function renderAll() {
+      enforceSingleMegaLimit();
+      renderSlotButtons();
+      renderEditor();
+      renderTeamList();
+      updateBattleHud();
+      renderBattleMoves();
+    }
+
+    async function loadDex() {
+      setDexLoading("Carregando Kanto Dex...");
+      try {
+        const response = await fetch("https://pokeapi.co/api/v2/pokemon?limit=151&offset=0");
+        if (!response.ok) {
+          throw new Error("Falha ao carregar Dex");
+        }
+
+        const data = await response.json();
+        state.dex = data.results.map((entry) => {
+          const id = getPokemonIdFromUrl(entry.url);
+          return {
+            id,
+            name: entry.name,
+          };
+        });
+
+        renderDexList();
+      } catch (error) {
+        setDexLoading("Nao foi possivel carregar a Dex. Verifique sua internet e recarregue.");
+      }
+    }
+
+    searchInputEl.addEventListener("input", () => {
+      state.search = searchInputEl.value;
+      renderDexList();
+    });
+
+    teamNameInputEl.addEventListener("change", () => {
+      if (!state.activeTeamId) return;
+      saveTeamToStorage();
+    });
+
+    exportBtn.addEventListener("click", exportTeam);
+    importBtn.addEventListener("click", importTeamFromTextarea);
+    saveBtn.addEventListener("click", () => saveTeamToStorage(true, true));
+    loadBtn.addEventListener("click", async () => {
+      await loadSelectedTeam(true);
+    });
+    startBattleBtn.addEventListener("click", startBattle);
+    newTeamBtn.addEventListener("click", createNewTeam);
+    deleteTeamBtn.addEventListener("click", async () => {
+      await deleteSelectedTeam();
+    });
+    clearBtn.addEventListener("click", clearTeam);
+    appModalOkEl.addEventListener("click", hideAppMessage);
+    appModalEl.addEventListener("click", (event) => {
+      if (event.target === appModalEl) hideAppMessage();
+    });
+
+    teamNameInputEl.value = defaultTeamName();
+    renderAll();
+    loadDex().then(() => loadTeamLibraryFromStorage(false));
+    wait(0);
+  </script>
 </body>
 </html>
